@@ -395,7 +395,7 @@ export default function App() {
                 <span style={{fontStyle:"italic",color:ACCENT}}>actually fair?</span>
               </h1>
               <p style={{fontSize:15,color:"var(--t2)",lineHeight:1.7,maxWidth:440}}>
-                Compare your rent to neighbourhood-level market data from CMHC and local renter data. Anonymous. Takes 30 seconds.
+                Check if your Vancouver rent is fair. Based on CMHC data and real renter submissions. Free. Anonymous. No account needed.
               </p>
             </div>
 
