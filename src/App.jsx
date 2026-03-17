@@ -625,6 +625,21 @@ export default function App() {
           </div>
         )}
 
+        
+        <div style={{marginTop:40,padding:"24px",background:"var(--bg-card)",border:"1px solid var(--border)",borderRadius:"var(--r-lg)",boxShadow:"var(--sh)"}}>
+          <div style={{fontFamily:"var(--mono)",fontSize:10,color:"var(--t3)",textTransform:"uppercase",letterSpacing:".1em",marginBottom:16}}>Vancouver rent at a glance (2025)</div>
+          <div>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"8px 0",borderBottom:"1px solid var(--border)"}}><span style={{fontSize:13,color:"var(--t2)"}}>1-bedroom average</span><span style={{fontFamily:"var(--mono)",fontSize:13,fontWeight:500,color:"var(--t1)"}}>$2,362/mo</span></div>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"8px 0",borderBottom:"1px solid var(--border)"}}><span style={{fontSize:13,color:"var(--t2)"}}>2-bedroom average</span><span style={{fontFamily:"var(--mono)",fontSize:13,fontWeight:500,color:"var(--t1)"}}>$3,170/mo</span></div>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"8px 0",borderBottom:"1px solid var(--border)"}}><span style={{fontSize:13,color:"var(--t2)"}}>Vacancy rate (2025)</span><span style={{fontFamily:"var(--mono)",fontSize:13,fontWeight:500,color:"var(--t1)"}}>0.9%</span></div>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"8px 0",borderBottom:"1px solid var(--border)"}}><span style={{fontSize:13,color:"var(--t2)"}}>Highest neighbourhood</span><span style={{fontFamily:"var(--mono)",fontSize:13,fontWeight:500,color:"var(--t1)"}}>West Vancouver (+38%)</span></div>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"8px 0",borderBottom:"1px solid var(--border)"}}><span style={{fontSize:13,color:"var(--t2)"}}>Most affordable</span><span style={{fontFamily:"var(--mono)",fontSize:13,fontWeight:500,color:"var(--t1)"}}>Marpole, Sunset (-13%)</span></div>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"8px 0",borderBottom:"1px solid var(--border)"}}><span style={{fontSize:13,color:"var(--t2)"}}>BC guideline (2025)</span><span style={{fontFamily:"var(--mono)",fontSize:13,fontWeight:500,color:"var(--t1)"}}>3.0% max</span></div>
+          </div>
+          <p style={{fontSize:11,color:"var(--t3)",lineHeight:1.65,marginTop:14}}>BC caps annual rent increases at the provincial guideline for all tenancies. The 2025 guideline is 3.0%.</p>
+          <p style={{fontSize:10,color:"var(--t3)",marginTop:6,fontFamily:"var(--mono)"}}>CMHC 2025 Rental Market Report · Rentals.ca Feb 2025 · BC RTB</p>
+        </div>
+
         <div style={{marginTop:40,paddingTop:22,borderTop:"1px solid var(--border)"}}>
           <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:10}}>
             {["CMHC Rental Market Survey (Oct 2024)","Rentals.ca Monthly Report (Feb 2025)","Local renter data"].map(s=>(
