@@ -40,8 +40,10 @@ function baseline(hood, unit, parking, utilities) {
        + (utilities ? ADDONS.utilities : 0);
 }
 
-function getRange(bench, conf) {
-  const spread = conf==="High" ? 0.08 : conf==="Medium" ? 0.13 : 0.19;
+function getRange(bench, conf, unit="1br") {
+  const unitSpreads = { bachelor:0.09, "1br":0.10, "2br":0.11, "3br":0.13, "3plus":0.15 };
+  const baseSpread = unitSpreads[unit] ?? 0.11;
+  const spread = conf==="High" ? 0.07 : conf==="Medium" ? 0.10 : baseSpread;
   return {
     low:  Math.round(bench*(1-spread)/50)*50,
     high: Math.round(bench*(1+spread)/50)*50,
