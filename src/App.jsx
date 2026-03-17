@@ -390,7 +390,7 @@ export default function App() {
         {!result ? (
           <>
             <div style={{marginBottom:32}}>
-              <h1 style={{fontFamily:"var(--serif)",fontSize:"clamp(26px,4.5vw,40px)",fontWeight:400,lineHeight:1.15,letterSpacing:"-.02em",marginBottom:12,color:"var(--t1)"}}>
+              <h1 style={{fontFamily:"var(--sans)",fontSize:"clamp(24px,4vw,36px)",fontWeight:700,lineHeight:1.15,letterSpacing:"-.02em",marginBottom:12,color:"var(--t1)"}}>
                 Is your Vancouver rent<br/>
                 <span style={{fontStyle:"italic",color:ACCENT}}>actually fair?</span>
               </h1>
