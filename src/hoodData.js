@@ -1,0 +1,80 @@
+export const VANCOUVER_HOODS = {
+  kitsilano: {
+    slug: "kitsilano", name: "Kitsilano",
+    hoodMult: 1.22, vsAvgPct: 22,
+    description: "Kitsilano is one of Vancouver's most desirable neighbourhoods, known for its beaches, outdoor lifestyle, and mix of heritage homes and newer rental buildings.",
+    context: "Units within walking distance of Kits Beach command the highest premiums.",
+    nearbyHoods: ["Point Grey", "Fairview", "West End"],
+  },
+  yaletown: {
+    slug: "yaletown", name: "Yaletown",
+    hoodMult: 1.25, vsAvgPct: 25,
+    description: "Yaletown is a upscale neighbourhood of converted warehouses and luxury condos in downtown Vancouver, popular with young professionals.",
+    context: "Premium finishes and central location push rents consistently above the city average.",
+    nearbyHoods: ["Downtown", "West End", "Mount Pleasant"],
+  },
+  mountpleasant: {
+    slug: "mountpleasant", name: "Mount Pleasant",
+    hoodMult: 1.04, vsAvgPct: 4,
+    description: "Mount Pleasant is a vibrant, arts-focused neighbourhood on the east side of Vancouver with a mix of heritage buildings, breweries, and newer rental developments.",
+    context: "Rents are close to the city average, offering good value for a central location.",
+    nearbyHoods: ["Main Street", "Fairview", "Commercial Drive"],
+  },
+  commercialdrive: {
+    slug: "commercialdrive", name: "Commercial Drive",
+    hoodMult: 0.97, vsAvgPct: -3,
+    description: "Commercial Drive is a diverse, community-oriented neighbourhood in East Vancouver known for its independent cafes, restaurants, and strong local character.",
+    context: "Rents are slightly below the city average, offering relative value on the east side.",
+    nearbyHoods: ["Mount Pleasant", "Grandview Woodland", "Hastings Sunrise"],
+  },
+  westend: {
+    slug: "westend", name: "West End",
+    hoodMult: 1.18, vsAvgPct: 18,
+    description: "The West End is a dense, walkable neighbourhood adjacent to Stanley Park and English Bay, offering some of Vancouver's most central rental options.",
+    context: "Proximity to the beach and downtown drives strong year-round rental demand.",
+    nearbyHoods: ["Downtown", "Yaletown", "Kitsilano"],
+  },
+  fairview: {
+    slug: "fairview", name: "Fairview",
+    hoodMult: 1.10, vsAvgPct: 10,
+    description: "Fairview is a central neighbourhood on the south slope of False Creek, popular with healthcare workers due to its proximity to Vancouver General Hospital.",
+    context: "Good transit access and central location support rents above the city average.",
+    nearbyHoods: ["Kitsilano", "Mount Pleasant", "Cambie"],
+  },
+  downtown: {
+    slug: "downtown", name: "Downtown Vancouver",
+    hoodMult: 1.20, vsAvgPct: 20,
+    description: "Downtown Vancouver offers maximum walkability and transit access, with a dense mix of condo rentals and purpose-built buildings close to employment centres.",
+    context: "Rents are well above the city average, reflecting the central location and high demand.",
+    nearbyHoods: ["West End", "Yaletown", "Gastown"],
+  },
+  richmond: {
+    slug: "richmond", name: "Richmond",
+    hoodMult: 0.92, vsAvgPct: -8,
+    description: "Richmond is a city south of Vancouver proper, well connected by the Canada Line SkyTrain. It offers more affordable rents than most Vancouver neighbourhoods.",
+    context: "Canada Line access keeps demand strong despite the suburban location.",
+    nearbyHoods: ["Marpole", "Burnaby", "South Granville"],
+  },
+  burnaby: {
+    slug: "burnaby", name: "Burnaby",
+    hoodMult: 0.93, vsAvgPct: -7,
+    description: "Burnaby offers a mix of urban and suburban living with strong SkyTrain connections on both the Millennium and Expo lines.",
+    context: "Metrotown and Brentwood areas command premiums within Burnaby itself.",
+    nearbyHoods: ["Richmond", "New Westminster", "East Vancouver"],
+  },
+  mainstreet: {
+    slug: "mainstreet", name: "Main Street",
+    hoodMult: 1.02, vsAvgPct: 2,
+    description: "Main Street is a popular corridor in South Vancouver known for its independent shops, restaurants, and strong sense of community.",
+    context: "Rents are close to the city average, with newer buildings pushing toward the higher end.",
+    nearbyHoods: ["Mount Pleasant", "Riley Park", "Fraser"],
+  },
+};
+
+export const VANCOUVER_CITY = {
+  key: "vancouver", name: "Vancouver", province: "British Columbia",
+  accent: "#0891b2", accentLight: "#ecfeff", accentBorder: "#a5f3fc",
+  calcUrl: "https://vancouverfairrent.ca",
+  bases: { bachelor:1950, "1br":2600, "2br":3400, "3br":4300, "3plus":5200 },
+  inflation: 0.040, rentControlled: false,
+};
