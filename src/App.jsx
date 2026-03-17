@@ -23,18 +23,15 @@ const INFLATION       = 0.040;
 
 const BASES = { bachelor:1950, "1br":2600, "2br":3400, "3br":4300, "3plus":5200 };
 const HOODS = {
-  "Alta Vista":0.95,"Barrhaven":0.92,"Bayshore / Britannia":0.96,
-  "Beacon Hill":0.93,"Blackburn Hamlet":0.91,"Byward Market":1.18,
-  "Carlington":0.88,"Centretown":1.08,"Chinatown / Lebreton":1.02,
-  "Downtown Core":1.15,"Elmvale Acres":0.90,"Findlay Creek":0.89,
-  "Gatineau (QC side)":0.82,"Glebe":1.20,"Greenboro":0.88,
-  "Hintonburg":1.10,"Kanata":0.97,"Little Italy":1.07,
-  "Lowertown":1.00,"Manor Park":1.06,"Manotick":0.94,
-  "Nepean":0.93,"New Edinburgh":1.16,"Old Ottawa South":1.05,
-  "Orleans":0.90,"Overbrook":0.90,"Queensway Terrace":0.94,
-  "Rideau-Vanier":0.87,"Riverside South":0.91,"Rockcliffe Park":1.28,
-  "Sandy Hill":1.04,"Stittsville":0.89,"Vanier":0.85,
-  "Wellington Village":1.12,"Westboro":1.18,
+  "Burnaby":0.93,"Cambie":1.08,"Chinatown":0.89,"Coal Harbour":1.35,
+  "Commercial Drive":0.97,"Downtown":1.20,"Dunbar":1.14,"Fairview":1.10,
+  "Fraser":0.95,"Gastown":1.00,"Grandview Woodland":0.98,
+  "Hastings Sunrise":0.94,"Kerrisdale":1.16,"Kitsilano":1.22,
+  "Main Street":1.02,"Marpole":0.87,"Mount Pleasant":1.04,
+  "New Westminster":0.90,"North Vancouver":1.07,"Oakridge":1.05,
+  "Point Grey":1.30,"Richmond":0.92,"Riley Park":1.01,"Shaughnessy":1.28,
+  "South Granville":1.12,"Strathcona":0.91,"Sunset":0.88,"West End":1.18,
+  "West Vancouver":1.38,"Yaletown":1.25,
 };
 const ADDONS = { parking:250, utilities:120 };
 const GUIDELINES = {
@@ -52,12 +49,12 @@ const UNITS = [
 ];
 const NEIGHBORHOODS = Object.keys(HOODS).sort((a,b) => a.localeCompare(b));
 const MARKET_SNAPSHOT = [
-  { label:"1-bedroom median",        val:"$1,945" },
-  { label:"2-bedroom median",        val:"$2,490" },
-  { label:"Vacancy rate (2025)",     val:"3.1%"   },
-  { label:"Rent control guideline",  val:"2.1% (2026)" },
-  { label:"Highest area",            val:"Rockcliffe Park" },
-  { label:"Most affordable area",    val:"Vanier" },
+  { label:"1-bedroom median",        val:"$3,050" },
+  { label:"2-bedroom median",        val:"$3,960" },
+  { label:"Vacancy rate (2025)",     val:"0.9%"   },
+  { label:"Rent guideline (2025)",   val:"3.0%" },
+  { label:"Highest area",            val:"West Vancouver" },
+  { label:"Most affordable area",    val:"Marpole" },
 ];
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -128,8 +125,8 @@ const CSS = `
     --t1: #111111;
     --t2: #444444;
     --t3: #767676;
-    --accent: #0a4a5c;
-    --accent-bg: #f0f6f8;
+    --accent: ${ACCENT};
+    --accent-bg: ${ACCENT_BG};
     --nav-bg: #1c2b36;
     --bar-bg: #2f4553;
   }
