@@ -51,7 +51,7 @@ function getRange(bench, conf) {
 function getConf(n) {
   if(n>=20) return { label:"High",   dot:"#16a34a", desc:`Based on ${n} local submissions blended with CMHC data.` };
   if(n>=8)  return { label:"Medium", dot:"#d97706", desc:`Based on ${n} local submissions blended with CMHC data.` };
-  return           { label:"Low",    dot:"#dc2626", desc:"Based on CMHC data only. Submit your rent to improve accuracy for others." };
+  return           { label:"Limited local data", dot:"#dc2626", desc:"Based on CMHC public data. Fewer than 8 renters have submitted for this area. Your submission improves accuracy here." };
 }
 
 function getVerdict(pct) {
