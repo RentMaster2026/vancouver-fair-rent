@@ -1,22 +1,141 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="shortcut icon" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#1c2b36" />
-    <title>Vancouver Rent Calculator — Fair Rent Canada</title>
-    <meta name="description" content="Check if your Vancouver rent is fair. Free, anonymous comparison tool based on CMHC data and real renter submissions. No account required." />
-    <meta property="og:title" content="Vancouver Rent Calculator — Fair Rent Canada" />
-    <meta property="og:description" content="Check if your Vancouver rent is fair. Free and anonymous." />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://vancouverfairrent.ca" />
-    <meta name="robots" content="index, follow" />
-    <link rel="canonical" href="https://vancouverfairrent.ca" />
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#1c2b36" />
+  <title>Vancouver Rent Calculator | Is My Rent Fair? | Fair Rent Canada</title>
+  <meta name="description" content="Check if your Vancouver rent is fair. Compare your rent to real data from CMHC and Vancouver renters by neighbourhood. Free, anonymous, no account needed." />
+  <link rel="canonical" href="https://vancouverfairrent.ca/" />
+  <meta name="robots" content="index, follow" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="shortcut icon" href="/favicon.svg" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://vancouverfairrent.ca/" />
+  <meta property="og:title" content="Vancouver Rent Calculator | Is My Rent Fair?" />
+  <meta property="og:description" content="Free, anonymous Vancouver rent comparison tool based on CMHC data and real Vancouver renter submissions." />
+  <meta property="og:site_name" content="Fair Rent Canada" />
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"WebApplication","name":"Vancouver Rent Calculator","url":"https://vancouverfairrent.ca","description":"Free tool to check if your Vancouver rent is fair. Compare your rent to real data from CMHC and Vancouver renters by neighbourhood.","applicationCategory":"FinanceApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"CAD"},"publisher":{"@type":"Organization","name":"Fair Rent Canada","url":"https://fairrent.ca"},"areaServed":{"@type":"City","name":"Vancouver","containedInPlace":{"@type":"Country","name":"Canada"}}}
+  </script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is the average rent for a 1-bedroom in Vancouver?","acceptedAnswer":{"@type":"Answer","text":"The average rent for a 1-bedroom apartment in Vancouver is approximately $3,050 per month as of 2025, based on CMHC data. Rents range from about $2,500 in areas like Marpole, Burnaby, and Strathcona to over $3,600 in Coal Harbour, Yaletown, and West Vancouver."}},{"@type":"Question","name":"What is the average rent for a 2-bedroom in Vancouver?","acceptedAnswer":{"@type":"Answer","text":"The average rent for a 2-bedroom in Vancouver is approximately $3,960 per month as of 2025. Rents vary from around $3,200 in more affordable areas to over $4,800 in premium waterfront and downtown neighbourhoods."}},{"@type":"Question","name":"Is rent controlled in Vancouver?","acceptedAnswer":{"@type":"Answer","text":"Yes. BC caps annual rent increases for existing tenants at the provincial guideline rate, which is 3.0% for 2025. This applies to all residential tenancies in Vancouver regardless of when the unit was built."}},{"@type":"Question","name":"What is the average rent in Kitsilano, Vancouver?","acceptedAnswer":{"@type":"Answer","text":"Kitsilano is one of Vancouver's most desirable neighbourhoods. Rents typically run about 22% above the Vancouver average, reflecting strong demand, proximity to Kits Beach, and a mix of heritage homes and newer rental buildings."}},{"@type":"Question","name":"What is the average rent in Burnaby?","acceptedAnswer":{"@type":"Answer","text":"Burnaby rents typically run about 7% below the Vancouver average. It offers strong SkyTrain connections on both the Millennium and Expo lines, with rental hubs around Metrotown and Brentwood."}},{"@type":"Question","name":"What is the average rent in East Vancouver?","acceptedAnswer":{"@type":"Answer","text":"East Vancouver neighbourhoods like Commercial Drive, Mount Pleasant, and Hastings Sunrise typically run close to or slightly below the Vancouver city average, offering relative value compared to the downtown and westside."}},{"@type":"Question","name":"How do I know if my Vancouver rent is fair?","acceptedAnswer":{"@type":"Answer","text":"Use the Vancouver Rent Calculator on this page. Enter your neighbourhood, unit type, and monthly rent. We compare it to CMHC data and anonymous submissions from Vancouver renters to show whether your rent is above, within, or below the local market range."}}]}
+  </script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:#f5f5f5;color:#111;line-height:1.5;}
+    .s-nav{background:#1c2b36;border-bottom:3px solid #0a4a5c;padding:0 16px;height:48px;display:flex;align-items:center;justify-content:space-between;}
+    .s-nav a{font-size:13px;font-weight:700;color:#fff;text-decoration:none;}
+    .s-nav span{font-size:12px;color:#aab8c2;}
+    .s-wrap{max-width:900px;margin:0 auto;padding:28px 16px 48px;}
+    .s-h1{font-size:clamp(20px,4vw,30px);font-weight:700;color:#111;margin-bottom:10px;line-height:1.2;}
+    .s-intro{font-size:14px;color:#444;line-height:1.65;max-width:640px;margin-bottom:24px;}
+    .s-section{margin-bottom:24px;}
+    .s-h2{font-size:16px;font-weight:700;color:#111;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #ccc;}
+    .s-table{width:100%;border-collapse:collapse;font-size:13px;background:#fff;border:1px solid #ccc;}
+    .s-table th{padding:8px 12px;background:#f0f0f0;border:1px solid #ccc;font-weight:700;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:0.04em;color:#444;}
+    .s-table td{padding:8px 12px;border:1px solid #e8e8e8;color:#111;}
+    .s-table td:nth-child(2){font-family:"Courier New",monospace;font-weight:700;}
+    .s-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;}
+    .s-hood{padding:8px 12px;background:#fff;border:1px solid #ccc;font-size:12px;color:#444;}
+    .s-hood strong{display:block;font-size:13px;color:#111;margin-bottom:2px;}
+    .s-notice{background:#f0f6f8;border-left:3px solid #0a4a5c;padding:12px 14px;font-size:13px;color:#0a3040;margin-bottom:16px;}
+    .s-faq-q{font-size:13px;font-weight:700;color:#111;margin-bottom:4px;}
+    .s-faq-a{font-size:13px;color:#444;line-height:1.65;margin-bottom:14px;padding-left:12px;border-left:2px solid #ccc;}
+    .s-footer{margin-top:32px;padding-top:16px;border-top:1px solid #ccc;font-size:11px;color:#767676;font-family:"Courier New",monospace;}
+    @media(max-width:480px){.s-wrap{padding:16px 12px 40px;}}
+  </style>
+</head>
+<body>
+  <nav class="s-nav">
+    <a href="https://fairrent.ca">Fair Rent Canada</a>
+    <span>Vancouver Rent Calculator</span>
+  </nav>
+
+  <div class="s-wrap" id="static-shell">
+    <h1 class="s-h1">Vancouver Rent Calculator</h1>
+    <p class="s-intro">Check if your Vancouver rent is fair. Compare your monthly rent to real data from CMHC and verified Vancouver renter submissions, by neighbourhood. Free. Anonymous. No account required.</p>
+
+    <div class="s-notice">This tool is loading. If it does not appear, please enable JavaScript in your browser.</div>
+
+    <div class="s-section">
+      <h2 class="s-h2">Average rent in Vancouver by unit type (2025)</h2>
+      <table class="s-table">
+        <thead><tr><th>Unit type</th><th>Average rent / mo</th><th>Typical range</th></tr></thead>
+        <tbody>
+          <tr><td>Bachelor / Studio</td><td>$2,300</td><td>$1,950 to $2,800</td></tr>
+          <tr><td>1 Bedroom</td><td>$3,050</td><td>$2,500 to $3,600</td></tr>
+          <tr><td>2 Bedroom</td><td>$3,960</td><td>$3,200 to $4,800</td></tr>
+          <tr><td>3 Bedroom</td><td>$5,000</td><td>$4,200 to $6,500</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:11px;color:#767676;margin-top:6px;">Source: CMHC Rental Market Survey (October 2024) and community submissions. Updated March 2026.</p>
+    </div>
+
+    <div class="s-section">
+      <h2 class="s-h2">Average rent by neighbourhood in Vancouver</h2>
+      <div class="s-grid">
+        <div class="s-hood"><strong>West Vancouver</strong>About 38% above Vancouver average</div>
+        <div class="s-hood"><strong>Coal Harbour</strong>About 35% above Vancouver average</div>
+        <div class="s-hood"><strong>Yaletown</strong>About 25% above Vancouver average</div>
+        <div class="s-hood"><strong>Kitsilano</strong>About 22% above Vancouver average</div>
+        <div class="s-hood"><strong>Downtown Vancouver</strong>About 20% above Vancouver average</div>
+        <div class="s-hood"><strong>West End</strong>About 18% above Vancouver average</div>
+        <div class="s-hood"><strong>Shaughnessy</strong>About 28% above Vancouver average</div>
+        <div class="s-hood"><strong>Kerrisdale</strong>About 16% above Vancouver average</div>
+        <div class="s-hood"><strong>Fairview</strong>About 10% above Vancouver average</div>
+        <div class="s-hood"><strong>Cambie</strong>About 8% above Vancouver average</div>
+        <div class="s-hood"><strong>Mount Pleasant</strong>About 4% above Vancouver average</div>
+        <div class="s-hood"><strong>Commercial Drive</strong>About 3% below Vancouver average</div>
+        <div class="s-hood"><strong>Burnaby</strong>About 7% below Vancouver average</div>
+        <div class="s-hood"><strong>Richmond</strong>About 8% below Vancouver average</div>
+        <div class="s-hood"><strong>Marpole</strong>About 13% below Vancouver average</div>
+      </div>
+    </div>
+
+    <div class="s-section">
+      <h2 class="s-h2">Frequently asked questions about Vancouver rent</h2>
+
+      <p class="s-faq-q">What is the average rent in Vancouver in 2025?</p>
+      <p class="s-faq-a">The average rent for a 1-bedroom apartment in Vancouver is about $3,050 per month in 2025, based on CMHC data. Vancouver has one of the lowest vacancy rates in Canada at 0.9%, which keeps rents high across the city.</p>
+
+      <p class="s-faq-q">What is the average rent in Kitsilano, Vancouver?</p>
+      <p class="s-faq-a">Kitsilano rents typically run about 22% above the Vancouver average. It is one of the most desirable neighbourhoods, known for Kits Beach, walkable amenities, and a mix of heritage homes and newer rental buildings.</p>
+
+      <p class="s-faq-q">What is the average rent in Burnaby?</p>
+      <p class="s-faq-a">Burnaby rents run about 7% below the Vancouver average. It has strong SkyTrain connections on both the Millennium and Expo lines, with rental hubs around Metrotown and Brentwood commanding premiums within Burnaby itself.</p>
+
+      <p class="s-faq-q">What is the average rent in East Vancouver?</p>
+      <p class="s-faq-a">East Vancouver neighbourhoods like Commercial Drive, Mount Pleasant, and Hastings Sunrise typically run close to or slightly below the Vancouver average, offering relative value compared to downtown and the westside.</p>
+
+      <p class="s-faq-q">What is the average rent in Richmond, BC?</p>
+      <p class="s-faq-a">Richmond rents run about 8% below the Vancouver average. It is well connected by the Canada Line SkyTrain and offers more affordable rents than most Vancouver neighbourhoods.</p>
+
+      <p class="s-faq-q">Is rent controlled in Vancouver?</p>
+      <p class="s-faq-a">Yes. BC caps annual rent increases for existing tenants at the provincial guideline rate, which is 3.0% for 2025. Unlike Ontario, BC rent control applies to all residential tenancies regardless of when the unit was built.</p>
+
+      <p class="s-faq-q">How do I check if my Vancouver rent is fair?</p>
+      <p class="s-faq-a">Use the Vancouver Rent Calculator on this page. Enter your neighbourhood, unit type, and monthly rent. We compare it to CMHC data and anonymous submissions from Vancouver renters to show whether your rent is above, within, or below the local market range.</p>
+    </div>
+
+    <p class="s-footer">Fair Rent Canada. Vancouver Rent Calculator. Data: CMHC 2025 and community submissions. Not legal advice. <a href="https://fairrent.ca" style="color:#767676;">fairrent.ca</a></p>
+  </div>
+
+  <div id="root"></div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var observer = new MutationObserver(function() {
+        var root = document.getElementById('root');
+        if (root && root.children.length > 0) {
+          var shell = document.getElementById('static-shell');
+          if (shell) shell.style.display = 'none';
+          observer.disconnect();
+        }
+      });
+      var root = document.getElementById('root');
+      if (root) observer.observe(root, { childList: true });
+    });
+  </script>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
 </html>
