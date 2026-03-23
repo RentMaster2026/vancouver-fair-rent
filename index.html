@@ -29,7 +29,7 @@
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
     body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:#f5f5f5;color:#111;line-height:1.5;}
-    .s-nav{background:#1c2b36;border-bottom:3px solid #0a4a5c;padding:0 16px;height:48px;display:flex;align-items:center;justify-content:space-between;}
+    .s-nav{background:#1c2b36;border-bottom:3px solid #1a5c34;padding:0 16px;height:48px;display:flex;align-items:center;justify-content:space-between;}
     .s-nav a{font-size:13px;font-weight:700;color:#fff;text-decoration:none;}
     .s-nav span{font-size:12px;color:#aab8c2;}
     .s-wrap{max-width:900px;margin:0 auto;padding:28px 16px 48px;}
@@ -44,12 +44,12 @@
     .s-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;}
     .s-hood{padding:8px 12px;background:#fff;border:1px solid #ccc;font-size:12px;color:#444;}
     .s-hood strong{display:block;font-size:13px;color:#111;margin-bottom:2px;}
-    .s-notice{background:#f0f6f8;border-left:3px solid #0a4a5c;padding:12px 14px;font-size:13px;color:#0a3040;margin-bottom:16px;}
+    .s-notice{background:#f0f7f2;border-left:3px solid #1a5c34;padding:12px 14px;font-size:13px;color:#1a4a28;margin-bottom:16px;}
     .s-faq-q{font-size:13px;font-weight:700;color:#111;margin-bottom:4px;}
     .s-faq-a{font-size:13px;color:#444;line-height:1.65;margin-bottom:14px;padding-left:12px;border-left:2px solid #ccc;}
     .s-footer{margin-top:32px;padding-top:16px;border-top:1px solid #ccc;font-size:11px;color:#767676;font-family:"Courier New",monospace;}
     .s-cross-links{display:flex;gap:16px;flex-wrap:wrap;margin-top:16px;font-size:13px;}
-    .s-cross-links a{color:#0a4a5c;font-weight:600;text-decoration:none;}
+    .s-cross-links a{color:#1a5c34;font-weight:600;text-decoration:none;}
     .s-cross-links a:hover{text-decoration:underline;}
     @media(max-width:480px){.s-wrap{padding:16px 12px 40px;}}
   </style>
@@ -143,7 +143,7 @@
     (function() {
       function hideShell() {
         var shell = document.getElementById('static-shell');
-        if (shell) shell.style.display = 'none';
+        if (shell) shell.style.display = 'none'; var nav = document.querySelector('.s-nav'); if (nav) nav.style.display = 'none';
       }
       function watch() {
         var root = document.getElementById('root');
