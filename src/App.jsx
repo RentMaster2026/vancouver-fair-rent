@@ -12,36 +12,34 @@ const supabase = createClient(
 
 const CITY            = "vancouver";
 const CITY_NAME       = "Vancouver";
-const PROVINCE        = "Ontario";
+const PROVINCE        = "British Columbia";
 const COOLDOWN_KEY    = "vancouver_fair_rent_last_submit";
 const COOLDOWN_MS     = 60_000;
 const ACCENT          = "#0a4a5c";
 const ACCENT_BG       = "#f0f6f8";
 const SHARE_URL       = "https://vancouverfairrent.ca";
-const RENT_CONTROLLED = false;
+const RENT_CONTROLLED = true;
 const INFLATION       = 0.040;
 
 const BASES = { bachelor:1950, "1br":2600, "2br":3400, "3br":4300, "3plus":5200 };
 const HOODS = {
-  "Alta Vista":0.95,"Barrhaven":0.92,"Bayshore / Britannia":0.96,
-  "Beacon Hill":0.93,"Blackburn Hamlet":0.91,"Byward Market":1.18,
-  "Carlington":0.88,"Centretown":1.08,"Chinatown / Lebreton":1.02,
-  "Downtown Core":1.15,"Elmvale Acres":0.90,"Findlay Creek":0.89,
-  "Gatineau (QC side)":0.82,"Glebe":1.20,"Greenboro":0.88,
-  "Hintonburg":1.10,"Kanata":0.97,"Little Italy":1.07,
-  "Lowertown":1.00,"Manor Park":1.06,"Manotick":0.94,
-  "Nepean":0.93,"New Edinburgh":1.16,"Old Ottawa South":1.05,
-  "Orleans":0.90,"Overbrook":0.90,"Queensway Terrace":0.94,
-  "Rideau-Vanier":0.87,"Riverside South":0.91,"West Vancouver":1.28,
-  "Sandy Hill":1.04,"Stittsville":0.89,"Marpole":0.85,
-  "Wellington Village":1.12,"Westboro":1.18,
+  "Burnaby":0.93,"Cambie":1.08,"Chinatown":0.89,
+  "Coal Harbour":1.35,"Commercial Drive":0.97,"Downtown":1.20,
+  "Dunbar":1.14,"Fairview":1.10,"Fraser":0.95,
+  "Gastown":1.00,"Grandview Woodland":0.98,"Hastings Sunrise":0.94,
+  "Kerrisdale":1.16,"Kitsilano":1.22,"Main Street":1.02,
+  "Marpole":0.87,"Mount Pleasant":1.04,"New Westminster":0.90,
+  "North Vancouver":1.07,"Oakridge":1.05,"Point Grey":1.30,
+  "Richmond":0.92,"Riley Park":1.01,"Shaughnessy":1.28,
+  "South Granville":1.12,"Strathcona":0.91,"Sunset":0.88,
+  "West End":1.18,"West Vancouver":1.38,"Yaletown":1.25,
 };
 const ADDONS = { parking:250, utilities:120 };
 const GUIDELINES = {
-  2010:0.021,2011:0.009,2012:0.031,2013:0.025,2014:0.008,
-  2015:0.016,2016:0.020,2017:0.015,2018:0.018,2019:0.018,
-  2020:0.022,2021:0.000,2022:0.012,2023:0.025,2024:0.025,
-  2025:0.025,2026:0.021,
+  2010:0.023,2011:0.028,2012:0.035,2013:0.032,2014:0.027,
+  2015:0.025,2016:0.029,2017:0.035,2018:0.040,2019:0.024,
+  2020:0.028,2021:0.015,2022:0.015,2023:0.020,2024:0.035,
+  2025:0.030,2026:0.030,
 };
 const UNITS = [
   { key:"bachelor", label:"Bachelor / Studio" },
@@ -55,7 +53,6 @@ const MARKET_SNAPSHOT = [
   { label:"1-bedroom median",        val:"$3,050" },
   { label:"2-bedroom median",        val:"$3,960" },
   { label:"Vacancy rate (2025)",     val:"0.9%"   },
-  { label:"Rent control guideline",  val:"3.0% (2025)" },
   { label:"Highest area",            val:"West Vancouver" },
   { label:"Most affordable area",    val:"Marpole" },
 ];
@@ -347,7 +344,7 @@ function ResultPanel({ result, hood, unitType, onReset }) {
               <tr>
                 <td style={{ color:"var(--t2)" }}>
                   Neighbourhood adjustment<br/>
-                  <span style={{ fontSize:11, color:"var(--t3)" }}>{hood} &mdash; {bd.hoodMult>=1 ? "above" : "below"} city average ({((bd.hoodMult-1)*100).toFixed(0)}%)</span>
+                  <span style={{ fontSize:11, color:"var(--t3)" }}>{hood}: {bd.hoodMult>=1 ? "above" : "below"} city average ({((bd.hoodMult-1)*100).toFixed(0)}%)</span>
                 </td>
                 <td className={bd.hoodAdj>=0?"sign-pos":"sign-neg"}>
                   {bd.hoodAdj>=0?"+":""}{fmt(bd.hoodAdj)}
@@ -687,7 +684,7 @@ export default function App() {
                   {hood&&unitType&&benchReady&&previewBench!=null&&(
                     <div className="bench-preview">
                       <div>
-                        <div className="bench-label">{CITY_NAME} benchmark &mdash; {hood}</div>
+                        <div className="bench-label">{CITY_NAME} benchmark: {hood}</div>
                         <div className="bench-val">{fmt(previewBench)}<span style={{ fontSize:12, fontWeight:400, color:"var(--t3)" }}>/mo</span></div>
                       </div>
                       <div className="bench-source">{benchLabel}</div>
@@ -703,7 +700,7 @@ export default function App() {
 
               {/* Market snapshot */}
               <div className="snapshot">
-                <div className="snapshot-header">{CITY_NAME} rental market &mdash; 2025</div>
+                <div className="snapshot-header">{CITY_NAME} rental market: 2025</div>
                 {MARKET_SNAPSHOT.map(({label,val}) => (
                   <div key={label} className="snapshot-row">
                     <span className="snapshot-key">{label}</span>
