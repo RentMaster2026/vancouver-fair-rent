@@ -35,12 +35,15 @@ const HOODS = {
   "West End":1.18,"West Vancouver":1.38,"Yaletown":1.25,
 };
 const ADDONS = { parking:250, utilities:120 };
+
+// BC Residential Tenancy Branch guideline rates (max allowable annual increase)
 const GUIDELINES = {
-  2010:0.023,2011:0.028,2012:0.035,2013:0.032,2014:0.027,
+  2010:0.032,2011:0.028,2012:0.042,2013:0.032,2014:0.027,
   2015:0.025,2016:0.029,2017:0.035,2018:0.040,2019:0.024,
   2020:0.028,2021:0.015,2022:0.015,2023:0.020,2024:0.035,
   2025:0.030,2026:0.030,
 };
+
 const UNITS = [
   { key:"bachelor", label:"Bachelor / Studio" },
   { key:"1br",      label:"1 Bedroom"         },
@@ -50,15 +53,15 @@ const UNITS = [
 ];
 const NEIGHBORHOODS = Object.keys(HOODS).sort((a,b) => a.localeCompare(b));
 const MARKET_SNAPSHOT = [
-  { label:"1-bedroom median",        val:"$3,050" },
-  { label:"2-bedroom median",        val:"$3,960" },
+  { label:"1-bedroom median",        val:"$2,600" },
+  { label:"2-bedroom median",        val:"$3,400" },
   { label:"Vacancy rate (2025)",     val:"0.9%"   },
-  { label:"Rent control guideline",  val:"3.0% (2025)" },
+  { label:"BC rent guideline (2025)",val:"3.0%"   },
   { label:"Highest area",            val:"West Vancouver" },
   { label:"Most affordable area",    val:"Marpole" },
 ];
 
-// Median $/sq ft by unit type (Ottawa, estimated from CMHC + Rentals.ca 2025)
+// Median $/sq ft by unit type (Vancouver metro, estimated from CMHC + Rentals.ca 2025)
 const MEDIAN_PSF = { bachelor:5.10, "1br":4.20, "2br":3.70, "3br":3.30, "3plus":3.00 };
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -67,7 +70,7 @@ const fmt = v => Number(v).toLocaleString("en-CA", { style:"currency", currency:
 
 function calcGuidelineCap(moveInRent, moveInYear) {
   const cur = new Date().getFullYear(); let r = moveInRent;
-  for (let yr = moveInYear + 1; yr <= cur; yr++) r *= 1 + (GUIDELINES[yr] ?? 0.025);
+  for (let yr = moveInYear + 1; yr <= cur; yr++) r *= 1 + (GUIDELINES[yr] ?? 0.030);
   return Math.round(r);
 }
 
@@ -129,10 +132,9 @@ function calcPsfScore(userPsf, medianPsf) {
   return 1.0;
 }
 
-function calcRentControlBonus(isRentControlled, guidelineCap, rentNum, sameYear) {
+function calcRentControlBonus(guidelineCap, rentNum, sameYear) {
+  // In BC, ALL residential tenancies are rent-controlled
   if (sameYear) return 5.0;
-  if (!RENT_CONTROLLED) return 5.0;
-  if (!isRentControlled) return 2.0;
   if (!guidelineCap) return 5.0;
   const overPct = (rentNum - guidelineCap) / guidelineCap;
   if (overPct <= 0) return 10.0;
@@ -140,16 +142,15 @@ function calcRentControlBonus(isRentControlled, guidelineCap, rentNum, sameYear)
   return 3.0;
 }
 
-function calcFairRentScore(rentNum, range, sqftNum, unitType, isRentControlled, guidelineCap, sameYear) {
+function calcFairRentScore(rentNum, range, sqftNum, unitType, guidelineCap, sameYear) {
   const marketScore = calcMarketScore(rentNum, range.low, range.high);
-  const rcBonus = calcRentControlBonus(isRentControlled, guidelineCap, rentNum, sameYear);
+  const rcBonus = calcRentControlBonus(guidelineCap, rentNum, sameYear);
 
   let psfScore = null;
   let userPsf = null;
   let medPsf = null;
 
   if (sqftNum && sqftNum >= 100) {
-    // Subtract parking/utility addons before computing $/sq ft
     userPsf = rentNum / sqftNum;
     medPsf = MEDIAN_PSF[unitType] ?? MEDIAN_PSF["1br"];
     psfScore = calcPsfScore(userPsf, medPsf);
@@ -251,10 +252,6 @@ const CSS = `
   .f-input:focus{outline:2px solid var(--accent);outline-offset:0;border-color:var(--accent);}
   .f-select{width:100%;padding:8px 30px 8px 10px;border:1px solid var(--border-dark);background:var(--white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23444'/%3E%3C/svg%3E") no-repeat right 10px center;color:var(--t1);font-size:14px;border-radius:0;appearance:none;cursor:pointer;}
   .f-select:focus{outline:2px solid var(--accent);outline-offset:0;}
-  .yn-pair{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-  .yn-btn{padding:8px 10px;border:1px solid var(--border-dark);background:var(--white);color:var(--t2);font-size:13px;font-weight:600;cursor:pointer;text-align:center;}
-  .yn-btn:hover{background:#f0f0f0;}
-  .yn-btn.on{border-color:var(--accent);background:var(--accent-bg);color:var(--accent);}
   .toggle-pair{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
   .toggle-item{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border:1px solid var(--border-dark);background:var(--white);cursor:pointer;}
   .toggle-item.on{border-color:var(--accent);background:var(--accent-bg);}
@@ -312,7 +309,6 @@ const CSS = `
   .sources{font-size:11px;color:var(--t3);line-height:1.6;padding-top:14px;border-top:1px solid var(--border);margin-top:20px;}
   .sources a{color:var(--t3);text-decoration:underline;}
 
-  /* Score display */
   .score-hero{text-align:center;padding:20px 14px;border-bottom:1px solid var(--border);}
   .score-number{font-family:var(--mono);font-size:48px;font-weight:700;line-height:1;}
   .score-of-ten{font-family:var(--mono);font-size:18px;font-weight:400;color:var(--t3);}
@@ -326,7 +322,6 @@ const CSS = `
   .psf-section{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:#f9f9f9;border:1px solid var(--border);flex-wrap:wrap;gap:8px;}
   .psf-val{font-family:var(--mono);font-size:15px;font-weight:700;}
   .psf-label{font-size:11px;color:var(--t3);}
-  .psf-compare{font-size:11px;color:var(--t2);}
 
   @media(max-width:768px){
     .page-grid{grid-template-columns:1fr;}
@@ -362,12 +357,6 @@ function ResultPanel({ result, hood, unitType, onReset }) {
   const highPct = ((range.high - barMin) / barSpan) * 100;
   const rentPct = Math.max(2, Math.min(98, ((rent - barMin) / barSpan) * 100));
 
-  const badgeStyle = {
-    above: { background:"#fdf0f0", color:"#8b1a1a", border:"1px solid #e8a8a8" },
-    below: { background:"#f0f4fd", color:"#1a3a8b", border:"1px solid #a8b8e8" },
-    within:{ background:"#f0f7f2", color:"#1a5c34", border:"1px solid #a8d5b5" },
-  };
-
   function copyLink() {
     navigator.clipboard?.writeText(SHARE_URL);
     setCopied(true); clearTimeout(copyRef.current);
@@ -400,7 +389,6 @@ function ResultPanel({ result, hood, unitType, onReset }) {
           {CITY_NAME} &middot; {hood} &middot; {unitLabel}
         </div>
 
-        {/* Score component breakdown */}
         <div className="score-breakdown">
           <div className="score-breakdown-item">
             <div className="score-breakdown-val">{score.marketScore.toFixed(1)}</div>
@@ -479,13 +467,12 @@ function ResultPanel({ result, hood, unitType, onReset }) {
           </div>
         </div>
 
-        {/* Verdict sub-text */}
         <p style={{ fontSize:13, color:"var(--t2)", lineHeight:1.65, borderLeft:"3px solid var(--border)", paddingLeft:10 }}>{posCopy.sub}</p>
 
         {/* Expandable breakdown */}
         <div>
           <button onClick={()=>setShowBreakdown(b=>!b)} style={{ background:"none", border:"none", cursor:"pointer", fontFamily:"var(--sans)", fontSize:13, fontWeight:600, color:"var(--accent)", padding:0 }}>
-            {showBreakdown ? "Hide calculation details" : "How this estimate was built"} {showBreakdown ? "▲" : "▼"}
+            {showBreakdown ? "Hide calculation details" : "How this estimate was built"} {showBreakdown ? "\u25B2" : "\u25BC"}
           </button>
           {showBreakdown && (
             <table className="data-table" style={{ marginTop:8 }}>
@@ -536,25 +523,21 @@ function ResultPanel({ result, hood, unitType, onReset }) {
           )}
         </div>
 
-        {/* Rent control */}
-        {RENT_CONTROLLED && !result.sameYear && (
+        {/* BC Rent control */}
+        {!result.sameYear && (
           <div>
             <div className="section-label">BC rent control</div>
-            {result.isRentControlled ? (
-              <div className="notice notice-green">
-                <strong>Rent controlled unit.</strong> BC caps annual increases at 3.0% for 2025. Based on your move-in rent, the estimated legal maximum today is <strong>{fmt(result.guidelineCap)}/mo</strong>.
-                {result.rent > result.guidelineCap
-                  ? <span style={{ display:"block", marginTop:6, color:"#8b1a1a", fontWeight:600 }}>Your current rent of {fmt(result.rent)} may exceed this cap. Consider filing with the Residential Tenancy Branch.</span>
-                  : <span style={{ display:"block", marginTop:4 }}>Your rent of {fmt(result.rent)} is within the legal cap.</span>
-                }
-                <a href="https://www2.gov.bc.ca/gov/content/housing-tenancy/residential-tenancies/during-a-tenancy/rent-increases" target="_blank" rel="noopener noreferrer" style={{ display:"inline-block", marginTop:8, fontSize:12 }}>BC rent increase guidelines &rarr;</a>
-              </div>
-            ) : (
-              <div className="notice notice-amber">
-                <strong>BC rent control applies.</strong> BC caps annual increases for existing tenants at the provincial guideline rate (3.0% for 2025). This applies to all residential tenancies.
-                <a href="https://www2.gov.bc.ca/gov/content/housing-tenancy/residential-tenancies" target="_blank" rel="noopener noreferrer" style={{ display:"inline-block", marginTop:8, fontSize:12 }}>Tenant rights in BC &rarr;</a>
-              </div>
-            )}
+            <div className="notice notice-green">
+              <strong>BC rent control applies.</strong> British Columbia caps annual rent increases for existing tenants at the provincial guideline rate. The 2025 guideline is 3.0%. Based on your move-in rent, the estimated legal maximum today is <strong>{fmt(result.guidelineCap)}/mo</strong>.
+              {result.rent > result.guidelineCap
+                ? <span style={{ display:"block", marginTop:6, color:"#8b1a1a", fontWeight:600 }}>Your current rent of {fmt(result.rent)} may exceed this cap. You may have grounds to dispute the increase with the Residential Tenancy Branch.</span>
+                : <span style={{ display:"block", marginTop:4 }}>Your rent of {fmt(result.rent)} is within the estimated legal maximum.</span>
+              }
+              <a href="https://www2.gov.bc.ca/gov/content/housing-tenancy/residential-tenancies/during-a-tenancy/rent-increases" target="_blank" rel="noopener noreferrer" style={{ display:"inline-block", marginTop:8, fontSize:12 }}>BC rent increase guidelines &rarr;</a>
+            </div>
+            <div style={{ fontSize:11, color:"var(--t3)", marginTop:6, lineHeight:1.5 }}>
+              In BC, rent control applies to all residential tenancies regardless of when the unit was built. This is different from Ontario, where units first occupied after November 15, 2018 are exempt.
+            </div>
           </div>
         )}
 
@@ -598,7 +581,6 @@ export default function App() {
   const [sqft,       setSqft]       = useState("");
   const [parking,    setParking]    = useState(false);
   const [utilities,  setUtilities]  = useState(false);
-  const [preNov2018, setPreNov2018] = useState(null);
   const [errors,     setErrors]     = useState({});
 
   const [result,      setResult]      = useState(null);
@@ -643,8 +625,6 @@ export default function App() {
     if(!rent||isNaN(+rent)||+rent<300)     e.rent="Enter a valid monthly rent";
     const yr=+moveInYear;
     if(!moveInYear||yr<1980||yr>curYear)   e.moveInYear=`Enter a year between 1980 and ${curYear}`;
-    if(RENT_CONTROLLED&&preNov2018===null) e.preNov2018="Please select one";
-    // sqft is optional, but validate if provided
     if(sqft && (isNaN(+sqft) || +sqft < 100 || +sqft > 10000)) e.sqft="Enter a size between 100 and 10,000 sq ft";
     return e;
   }
@@ -668,12 +648,12 @@ export default function App() {
 
     const yearsAgo    = Math.max(0,curYear-yr);
     const moveinBench = Math.round(bd.finalBench*Math.pow(1-INFLATION,yearsAgo));
-    const guidelineCap= (!sameYear&&RENT_CONTROLLED&&preNov2018)?calcGuidelineCap(moveinBench,yr):null;
+    // BC: rent control applies to ALL tenancies, so always calculate guideline cap
+    const guidelineCap= !sameYear ? calcGuidelineCap(moveinBench,yr) : null;
 
-    // Calculate Fair Rent Canada Score
-    const scoreData = calcFairRentScore(rentNum, range, sqftNum, unitType, preNov2018===true, guidelineCap, sameYear);
+    const scoreData = calcFairRentScore(rentNum, range, sqftNum, unitType, guidelineCap, sameYear);
 
-    setResult({rent:rentNum,range,conf,pos,posCopy,breakdown:bd,moveinBench,guidelineCap,isRentControlled:preNov2018===true,sameYear,moveInYear:yr,communityN,score:scoreData});
+    setResult({rent:rentNum,range,conf,pos,posCopy,breakdown:bd,moveinBench,guidelineCap,sameYear,moveInYear:yr,communityN,score:scoreData});
 
     try {
       const last=Number(localStorage.getItem(COOLDOWN_KEY)??0);
@@ -691,7 +671,7 @@ export default function App() {
 
   function handleReset() {
     setResult(null); setHood(""); setUnitType(""); setRent(""); setMoveInYear(""); setSqft("");
-    setParking(false); setUtilities(false); setPreNov2018(null); setErrors({}); setSaveWarning("");
+    setParking(false); setUtilities(false); setErrors({}); setSaveWarning("");
     window.scrollTo(0,0);
   }
 
@@ -713,7 +693,6 @@ export default function App() {
       <style>{CSS}</style>
       <div style={{ minHeight:"100vh", background:"var(--bg)" }}>
 
-        {/* NAV */}
         <div className="gov-nav">
           <div className="gov-nav-inner">
             <a href="https://fairrent.ca" className="gov-wordmark">
@@ -725,7 +704,6 @@ export default function App() {
           </div>
         </div>
 
-        {/* SUB-NAV */}
         <div className="gov-subbar">
           <div className="gov-subbar-inner">
             <a href="https://fairrent.ca">All cities</a>
@@ -735,17 +713,15 @@ export default function App() {
           </div>
         </div>
 
-        {/* PAGE */}
         <div className="page-wrap">
 
-          {/* Page heading */}
           <div style={{ marginBottom:20, paddingBottom:16, borderBottom:"1px solid var(--border)" }}>
             <h1 style={{ fontSize:"clamp(18px,3vw,24px)", fontWeight:700, color:"var(--t1)", marginBottom:4, lineHeight:1.2 }}>
-              {CITY_NAME} Rent Calculator: Check If Your Rent Is Fair
+              Vancouver Rent Calculator: Check If Your Rent Is Fair
             </h1>
             <p style={{ fontSize:13, color:"var(--t2)", lineHeight:1.5 }}>
-              Find out if your {CITY_NAME} rent is fair. Compare what you pay to real market data from CMHC and local renter submissions.
-              Free. Anonymous. No account required.
+              Find out if your Vancouver rent is fair. Compare what you pay to real market data from CMHC and local renter submissions.
+              Free. Anonymous. No account required. BC rent control applies to all tenancies.
             </p>
           </div>
 
@@ -761,7 +737,6 @@ export default function App() {
             </div>
           </div>
 
-          {/* Two-column grid */}
           <div className="page-grid">
 
             {/* LEFT: Form */}
@@ -773,7 +748,6 @@ export default function App() {
                 </div>
                 <div className="form-body">
 
-                  {/* Neighbourhood + Unit */}
                   <div className="f-row">
                     <div>
                       <label className="field-label">Neighbourhood</label>
@@ -793,11 +767,10 @@ export default function App() {
                     </div>
                   </div>
 
-                  {/* Rent + Year */}
                   <div className="f-row">
                     <div>
                       <label className="field-label">Monthly rent (CAD)</label>
-                      <input className="f-input" type="number" placeholder="e.g. 2200" value={rent} onChange={e=>setRent(e.target.value)} style={{ borderColor:errors.rent?"#8b1a1a":undefined }}/>
+                      <input className="f-input" type="number" placeholder="e.g. 2800" value={rent} onChange={e=>setRent(e.target.value)} style={{ borderColor:errors.rent?"#8b1a1a":undefined }}/>
                       {errors.rent&&<div className="field-error">{errors.rent}</div>}
                     </div>
                     <div>
@@ -810,23 +783,15 @@ export default function App() {
                   {/* Square footage (optional) */}
                   <div>
                     <label className="field-label">Unit size in sq ft <span style={{ fontWeight:400, textTransform:"none" }}>(optional)</span></label>
-                    <input className="f-input" type="number" placeholder="e.g. 650" value={sqft} onChange={e=>setSqft(e.target.value)} style={{ maxWidth:200, borderColor:errors.sqft?"#8b1a1a":undefined }}/>
+                    <input className="f-input" type="number" placeholder="e.g. 550" value={sqft} onChange={e=>setSqft(e.target.value)} style={{ maxWidth:200, borderColor:errors.sqft?"#8b1a1a":undefined }}/>
                     {errors.sqft&&<div className="field-error">{errors.sqft}</div>}
-                    <div className="field-note">Adding your unit size improves your score accuracy. We compare your price per square foot to the neighbourhood median.</div>
+                    <div className="field-note">Adding your unit size improves your score accuracy. Vancouver has many micro-units where price per square foot reveals the true cost.</div>
                   </div>
 
-                  {/* Rent control */}
-                  {RENT_CONTROLLED && (
-                    <div>
-                      <label className="field-label">Is your unit a residential tenancy in BC?</label>
-                      <div className="yn-pair">
-                        <button type="button" className={"yn-btn"+(preNov2018===true?" on":"")} onClick={()=>setPreNov2018(true)}>Yes, BC rent control applies</button>
-                        <button type="button" className={"yn-btn"+(preNov2018===false?" on":"")} onClick={()=>setPreNov2018(false)}>No, commercial or exempt unit</button>
-                      </div>
-                      {errors.preNov2018&&<div className="field-error">{errors.preNov2018}</div>}
-                      <div className="field-note">BC caps annual rent increases at the provincial guideline rate (3.0% for 2025) for all residential tenancies.</div>
-                    </div>
-                  )}
+                  {/* No rent control question needed for BC: it applies to ALL tenancies */}
+                  <div className="notice notice-green" style={{ margin:0 }}>
+                    <strong>BC rent control applies to your unit.</strong> British Columbia caps annual rent increases for all residential tenancies at 3.0% for 2025. We will estimate your legal maximum automatically.
+                  </div>
 
                   {/* Toggles */}
                   <div>
@@ -877,7 +842,7 @@ export default function App() {
                   </div>
                 ))}
                 <div style={{ padding:"8px 14px", fontSize:11, color:"var(--t3)", borderTop:"1px solid var(--border)" }}>
-                  Source: CMHC 2025 Rental Market Report &middot; Rentals.ca Feb 2025
+                  Source: CMHC 2025 Rental Market Report &middot; Rentals.ca Feb 2025 &middot; BC Residential Tenancy Branch
                 </div>
               </div>
 
@@ -914,7 +879,7 @@ export default function App() {
 
           {/* Sources */}
           <div className="sources">
-            Data sources: CMHC Rental Market Survey (October 2024) &middot; Rentals.ca National Rent Report (February 2025) &middot; Anonymous community submissions. &nbsp;
+            Data sources: CMHC Rental Market Survey (October 2024) &middot; Rentals.ca National Rent Report (February 2025) &middot; BC Residential Tenancy Branch &middot; Anonymous community submissions. &nbsp;
             Results are market estimates for general reference only. Not legal or financial advice. &nbsp;
             <a href="https://fairrent.ca/methodology" style={{ color:"var(--t3)" }}>Methodology</a> &middot;
             <a href="https://fairrent.ca/privacy" style={{ color:"var(--t3)", marginLeft:6 }}>Privacy</a>
