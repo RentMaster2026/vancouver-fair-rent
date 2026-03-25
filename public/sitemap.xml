@@ -31,12 +31,7 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://vancouverfairrent.ca/fairview</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://vancouverfairrent.ca/downtown</loc>
+    <loc>https://vancouverfairrent.ca/burnaby</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -46,7 +41,12 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://vancouverfairrent.ca/burnaby</loc>
+    <loc>https://vancouverfairrent.ca/fairview</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://vancouverfairrent.ca/downtown</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>

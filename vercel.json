@@ -1,20 +1,18 @@
 {
   "rewrites": [
+    { "source": "/kitsilano", "destination": "/neighbourhoods/kitsilano.html" },
+    { "source": "/yaletown", "destination": "/neighbourhoods/yaletown.html" },
+    { "source": "/mount-pleasant", "destination": "/neighbourhoods/mount-pleasant.html" },
+    { "source": "/commercial-drive", "destination": "/neighbourhoods/commercial-drive.html" },
+    { "source": "/west-end", "destination": "/neighbourhoods/west-end.html" },
+    { "source": "/burnaby", "destination": "/neighbourhoods/burnaby.html" },
+    { "source": "/richmond", "destination": "/neighbourhoods/richmond.html" },
+    { "source": "/fairview", "destination": "/neighbourhoods/fairview.html" },
+    { "source": "/downtown", "destination": "/neighbourhoods/downtown.html" },
+    { "source": "/main-street", "destination": "/neighbourhoods/main-street.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
-    {
-      "source": "/src/(.*)",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
-      ]
-    },
-    {
-      "source": "/assets/(.*)",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
-      ]
-    },
     {
       "source": "/favicon.svg",
       "headers": [
@@ -22,10 +20,9 @@
       ]
     },
     {
-      "source": "/index.html",
+      "source": "/sitemap.xml",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" },
-        { "key": "X-Content-Type-Options", "value": "nosniff" }
+        { "key": "Cache-Control", "value": "public, max-age=86400" }
       ]
     }
   ]
