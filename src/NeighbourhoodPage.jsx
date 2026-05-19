@@ -145,7 +145,7 @@ export default function NeighbourhoodPage({ hood, city, onBack }) {
       q: city.rentControlled ? `Is rent controlled in ${hood.name}?` : `Does rent control apply in ${hood.name}?`,
       a: city.rentControlled
         ? `It depends on your unit. Units first occupied before November 15, 2018 are subject to Ontario's annual rent increase guideline (2.1% for 2026). Units first occupied after that date are exempt from rent control between tenancies.`
-        : `Yes. BC caps annual rent increases for existing tenants at the provincial guideline (3.0% for 2025). This applies to all residential tenancies in ${hood.name}.`,
+        : `Yes. BC caps annual rent increases for existing tenants at the provincial guideline (3.0% for 2026). This applies to all residential tenancies in ${hood.name}.`,
     },
     {
       q: `How accurate is the ${hood.name} estimate?`,

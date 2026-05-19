@@ -31,16 +31,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://vancouverfairrent.ca/burnaby</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://vancouverfairrent.ca/richmond</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://vancouverfairrent.ca/fairview</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -51,7 +41,67 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://vancouverfairrent.ca/richmond</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://vancouverfairrent.ca/burnaby</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://vancouverfairrent.ca/main-street</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://vancouverfairrent.ca/gastown</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://vancouverfairrent.ca/chinatown</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://vancouverfairrent.ca/strathcona</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://vancouverfairrent.ca/grandview-woodland</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://vancouverfairrent.ca/coal-harbour</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://vancouverfairrent.ca/south-granville</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://vancouverfairrent.ca/kerrisdale</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://vancouverfairrent.ca/dunbar</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://vancouverfairrent.ca/north-vancouver</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://vancouverfairrent.ca/new-westminster</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>

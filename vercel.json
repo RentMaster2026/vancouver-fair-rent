@@ -41,6 +41,46 @@
       "destination": "/neighbourhoods/main-street.html"
     },
     {
+      "source": "/gastown",
+      "destination": "/neighbourhoods/gastown.html"
+    },
+    {
+      "source": "/chinatown",
+      "destination": "/neighbourhoods/chinatown.html"
+    },
+    {
+      "source": "/strathcona",
+      "destination": "/neighbourhoods/strathcona.html"
+    },
+    {
+      "source": "/grandview-woodland",
+      "destination": "/neighbourhoods/grandview-woodland.html"
+    },
+    {
+      "source": "/coal-harbour",
+      "destination": "/neighbourhoods/coal-harbour.html"
+    },
+    {
+      "source": "/south-granville",
+      "destination": "/neighbourhoods/south-granville.html"
+    },
+    {
+      "source": "/kerrisdale",
+      "destination": "/neighbourhoods/kerrisdale.html"
+    },
+    {
+      "source": "/dunbar",
+      "destination": "/neighbourhoods/dunbar.html"
+    },
+    {
+      "source": "/north-vancouver",
+      "destination": "/neighbourhoods/north-vancouver.html"
+    },
+    {
+      "source": "/new-westminster",
+      "destination": "/neighbourhoods/new-westminster.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

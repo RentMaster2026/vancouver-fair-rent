@@ -56,7 +56,7 @@ const MARKET_SNAPSHOT = [
   { label:"1-bedroom median",        val:"$2,600" },
   { label:"2-bedroom median",        val:"$3,400" },
   { label:"Vacancy rate (2025)",     val:"0.9%"   },
-  { label:"BC rent guideline (2025)",val:"3.0%"   },
+  { label:"BC rent guideline (2026)",val:"3.0%"   },
   { label:"Highest area",            val:"West Vancouver" },
   { label:"Most affordable area",    val:"Marpole" },
 ];
@@ -528,7 +528,7 @@ function ResultPanel({ result, hood, unitType, onReset }) {
           <div>
             <div className="section-label">BC rent control</div>
             <div className="notice notice-green">
-              <strong>BC rent control applies.</strong> British Columbia caps annual rent increases for existing tenants at the provincial guideline rate. The 2025 guideline is 3.0%. Based on your move-in rent, the estimated legal maximum today is <strong>{fmt(result.guidelineCap)}/mo</strong>.
+              <strong>BC rent control applies.</strong> British Columbia caps annual rent increases for existing tenants at the provincial guideline rate. The 2026 guideline is 3.0%. Based on your move-in rent, the estimated legal maximum today is <strong>{fmt(result.guidelineCap)}/mo</strong>.
               {result.rent > result.guidelineCap
                 ? <span style={{ display:"block", marginTop:6, color:"#8b1a1a", fontWeight:600 }}>Your current rent of {fmt(result.rent)} may exceed this cap. You may have grounds to dispute the increase with the Residential Tenancy Branch.</span>
                 : <span style={{ display:"block", marginTop:4 }}>Your rent of {fmt(result.rent)} is within the estimated legal maximum.</span>
