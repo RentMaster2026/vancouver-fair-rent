@@ -706,6 +706,7 @@ export default function App() {
 
         <div className="gov-subbar">
           <div className="gov-subbar-inner">
+            <a href="/map" style={{background:"#1a5c34",color:"#fff",padding:"3px 10px",borderRadius:"3px",fontWeight:600}}>Rent Map</a>
             <a href="https://fairrent.ca">All cities</a>
             <a href="https://fairrent.ca/methodology">Methodology</a>
             <a href="https://fairrent.ca/about">About</a>

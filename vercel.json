@@ -80,6 +80,7 @@
       "source": "/new-westminster",
       "destination": "/neighbourhoods/new-westminster.html"
     },
+    { "source": "/map", "destination": "/map.html" },
     {
       "source": "/(.*)",
       "destination": "/index.html"
