@@ -746,6 +746,22 @@ export default function App() {
   const [showHood,    setShowHood]    = useState(null);
 
   useEffect(() => {
+    const path = window.location.pathname.replace(/^\//, '');
+    if (path && path !== 'map') {
+      const found = Object.entries(VANCOUVER_HOODS).find(([, h]) => h.slug === path);
+      if (found) setShowHood(found[0]);
+    }
+    function onPop() {
+      const s = window.location.pathname.replace(/^\//, '');
+      if (!s || s === 'map') { setShowHood(null); return; }
+      const f = Object.entries(VANCOUVER_HOODS).find(([, h]) => h.slug === s);
+      setShowHood(f ? f[0] : null);
+    }
+    window.addEventListener('popstate', onPop);
+    return () => window.removeEventListener('popstate', onPop);
+  }, []);
+
+  useEffect(() => {
     const KEY = CITY+"_count_cache";
     try { const {count,ts}=JSON.parse(localStorage.getItem(KEY)||"{}"); if(Date.now()-ts<5*60*1000){setRawCount(count);setCountLoaded(true);} } catch{}
     supabase.from("rent_submissions").select("*",{count:"exact",head:true}).eq("city",CITY)
@@ -828,7 +844,7 @@ export default function App() {
     <NeighbourhoodPage
       hood={VANCOUVER_HOODS[showHood]}
       city={VANCOUVER_CITY}
-      onBack={() => { setShowHood(null); window.scrollTo(0,0); }}
+      onBack={() => { setShowHood(null); window.history.pushState({}, '', '/'); window.scrollTo(0,0); }}
     />
   );
 
@@ -880,11 +896,19 @@ export default function App() {
           <div className="hood-section">
             <div className="hood-label">{t('browseByHood')}</div>
             <div className="hood-pills">
-              {Object.keys(VANCOUVER_HOODS).map(slug => (
-                <button key={slug} className="hood-pill" onClick={() => setShowHood(slug)}>
-                  {VANCOUVER_HOODS[slug].name}
-                </button>
-              ))}
+              {Object.keys(VANCOUVER_HOODS).map(key => {
+                const h = VANCOUVER_HOODS[key];
+                return (
+                  <a
+                    key={key}
+                    href={"/" + h.slug}
+                    className="hood-pill"
+                    onClick={e => { e.preventDefault(); setShowHood(key); window.history.pushState({}, '', '/' + h.slug); }}
+                  >
+                    {h.name}
+                  </a>
+                );
+              })}
             </div>
           </div>
 
