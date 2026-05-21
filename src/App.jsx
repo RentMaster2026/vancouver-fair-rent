@@ -81,7 +81,7 @@ const STRINGS = {
     rentIncludes:"Rent includes",
     bcRCNotice:"BC rent control applies to your unit. British Columbia caps annual rent increases for all residential tenancies at 3.0% for 2025. We will estimate your legal maximum automatically.",
     selectDots:"Select...", btnCompare:"Compare my rent", btnProcessing:"Processing...",
-    anonNote:"Anonymous · No account required · No personal data stored",
+    anonNote:"Anonymous · No signup · Never sold as personal data",
     errHood:"Select a neighbourhood", errUnit:"Select a unit type",
     errRent:"Enter a valid monthly rent", errYear:y=>`Enter a year between 1980 and ${y}`,
     errSqft:"Enter a size between 100 and 10,000 sq ft",
@@ -512,7 +512,7 @@ function EmailCapture({ city, cityName }) {
   if (status === "success") {
     return (
       <div className="email-cap email-cap-ok">
-        <strong>Thanks — you&apos;re on the list.</strong><br/>
+        <strong>Thanks. You are on the list.</strong><br/>
         We&apos;ll email you the next monthly {cityName} rent report.{" "}
         <button type="button" className="email-cap-x" onClick={()=>setHide(true)}>×</button>
       </div>
@@ -523,7 +523,7 @@ function EmailCapture({ city, cityName }) {
     <div className="email-cap">
       <button type="button" className="email-cap-x" onClick={()=>{ try{localStorage.setItem("frc_email_"+city,"1");}catch{}; setHide(true); }} title="Dismiss">×</button>
       <div className="email-cap-title">Get the monthly {cityName} rent report</div>
-      <div className="email-cap-sub">One email per month with the latest rent benchmarks across {cityName} neighbourhoods. Free, unsubscribe anytime.</div>
+      <div className="email-cap-sub">One email per month. Free. Unsubscribe anytime. We never share your email.</div>
       <form onSubmit={submit} className="email-cap-form">
         <input
           type="email" required value={email}
@@ -537,7 +537,7 @@ function EmailCapture({ city, cityName }) {
         </button>
       </form>
       {status === "error" && (
-        <div style={{fontSize:11,color:"#8b1a1a",marginTop:6}}>Something went wrong — try again or email hello@fairrent.ca</div>
+        <div style={{fontSize:11,color:"#8b1a1a",marginTop:6}}>Something went wrong. Try again or email hello@fairrent.ca</div>
       )}
     </div>
   );
