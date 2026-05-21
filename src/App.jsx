@@ -351,7 +351,8 @@ const CSS = `
   .gov-wordmark span{font-weight:400;color:#aab8c2;}
   .gov-count{font-family:var(--mono);font-size:11px;color:#aab8c2;white-space:nowrap;}
   .gov-subbar{background:var(--bar-bg);border-bottom:1px solid #3d5a6e;}
-  .gov-subbar-inner{max-width:1100px;margin:0 auto;padding:0 16px;height:36px;display:flex;align-items:center;gap:20px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+  .gov-subbar-inner{max-width:1100px;margin:0 auto;padding:0 16px;min-height:36px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+  @media(max-width:640px){.gov-subbar-inner{gap:8px 12px;padding:6px 12px;}.gov-subbar a{font-size:11.5px;}}
   .gov-subbar-inner::-webkit-scrollbar{display:none;}
   .gov-subbar a{font-size:12px;color:#aab8c2;text-decoration:none;white-space:nowrap;flex-shrink:0;}
   .gov-subbar a:hover{color:#fff;text-decoration:underline;}
@@ -440,6 +441,18 @@ const CSS = `
   .share-btn{padding:8px 4px;font-size:11px;font-weight:700;text-decoration:none;text-align:center;cursor:pointer;border:none;}
   .sources{font-size:11px;color:var(--t3);line-height:1.6;padding-top:14px;border-top:1px solid var(--border);margin-top:20px;}
   .sources a{color:var(--t3);text-decoration:underline;}
+  .email-cap{position:relative;margin-top:16px;padding:16px 18px;background:var(--accent-bg);border:1px solid #a8d5b5;border-left:3px solid var(--accent);}
+  .email-cap-ok{background:#f0f7f2;}
+  .email-cap-x{position:absolute;top:6px;right:8px;background:none;border:none;font-size:16px;color:var(--t3);cursor:pointer;line-height:1;padding:4px;}
+  .email-cap-x:hover{color:var(--t1);}
+  .email-cap-title{font-size:14px;font-weight:700;color:var(--t1);margin-bottom:4px;}
+  .email-cap-sub{font-size:12px;color:var(--t2);line-height:1.5;margin-bottom:10px;}
+  .email-cap-form{display:flex;gap:6px;}
+  .email-cap-in{flex-grow:1;padding:8px 10px;border:1px solid var(--border-dark);font-size:13px;background:#fff;border-radius:2px;font-family:var(--sans);}
+  .email-cap-in:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px #d1e5d8;}
+  .email-cap-btn{padding:8px 14px;background:var(--accent);color:#fff;border:none;font-size:12px;font-weight:700;cursor:pointer;border-radius:2px;white-space:nowrap;}
+  .email-cap-btn:hover{background:#15492a;}
+  .email-cap-btn:disabled{opacity:0.6;cursor:not-allowed;}
 
   .score-hero{text-align:center;padding:20px 14px;border-bottom:1px solid var(--border);}
   .score-number{font-family:var(--mono);font-size:48px;font-weight:700;line-height:1;}
@@ -469,6 +482,66 @@ const CSS = `
     .score-number{font-size:40px;}
   }
 `;
+
+// ─── Email Capture ────────────────────────────────────────────────────────────
+
+function EmailCapture({ city, cityName }) {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState("idle");
+  const [hide, setHide] = useState(() => {
+    try { return localStorage.getItem("frc_email_"+city)==="1"; } catch { return false; }
+  });
+  if (hide) return null;
+
+  async function submit(e) {
+    e.preventDefault();
+    if (!email.trim()) return;
+    setStatus("submitting");
+    const { error } = await supabase.from("email_subscribers").insert([{
+      email: email.trim().toLowerCase(),
+      city,
+      source: "result_panel"
+    }]);
+    if (error && !String(error.message||"").toLowerCase().includes("duplicate")) {
+      setStatus("error"); return;
+    }
+    try { localStorage.setItem("frc_email_"+city, "1"); } catch {}
+    setStatus("success");
+  }
+
+  if (status === "success") {
+    return (
+      <div className="email-cap email-cap-ok">
+        <strong>Thanks — you&apos;re on the list.</strong><br/>
+        We&apos;ll email you the next monthly {cityName} rent report.{" "}
+        <button type="button" className="email-cap-x" onClick={()=>setHide(true)}>×</button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="email-cap">
+      <button type="button" className="email-cap-x" onClick={()=>{ try{localStorage.setItem("frc_email_"+city,"1");}catch{}; setHide(true); }} title="Dismiss">×</button>
+      <div className="email-cap-title">Get the monthly {cityName} rent report</div>
+      <div className="email-cap-sub">One email per month with the latest rent benchmarks across {cityName} neighbourhoods. Free, unsubscribe anytime.</div>
+      <form onSubmit={submit} className="email-cap-form">
+        <input
+          type="email" required value={email}
+          onChange={e=>setEmail(e.target.value)}
+          placeholder="you@email.com"
+          className="email-cap-in"
+          autoComplete="email"
+        />
+        <button type="submit" className="email-cap-btn" disabled={status==="submitting"}>
+          {status==="submitting" ? "..." : "Subscribe"}
+        </button>
+      </form>
+      {status === "error" && (
+        <div style={{fontSize:11,color:"#8b1a1a",marginTop:6}}>Something went wrong — try again or email hello@fairrent.ca</div>
+      )}
+    </div>
+  );
+}
 
 // ─── Result Panel ─────────────────────────────────────────────────────────────
 
@@ -703,6 +776,8 @@ function ResultPanel({ result, hood, unitType, onReset, t }) {
             </div>
           </div>
         )}
+
+        <EmailCapture city="vancouver" cityName="Vancouver"/>
       </div>
     </div>
   );
