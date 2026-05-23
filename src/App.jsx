@@ -411,7 +411,10 @@ const CSS = `
   .result-placeholder{padding:28px 16px;text-align:center;}
   .result-placeholder-icon{width:44px;height:44px;border:2px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;}
   .result-placeholder p{font-size:13px;color:var(--t3);line-height:1.6;max-width:240px;margin:0 auto 16px;}
-  .result-header{padding:12px 14px;border-bottom:1px solid var(--border);background:#fafafa;display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;}
+  .result-thanks{padding:11px 14px;background:#f0f7f2;border-bottom:1px solid #a8d5b5;border-left:3px solid var(--accent);}
+  .result-thanks-tag{font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:3px;}
+  .result-thanks-text{font-size:12px;color:#1a4a28;line-height:1.5;}
+    .result-header{padding:12px 14px;border-bottom:1px solid var(--border);background:#fafafa;display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;}
   .result-header-meta{font-size:11px;color:var(--t3);margin-top:2px;}
   .result-verdict-badge{font-size:11px;font-weight:700;padding:3px 8px;letter-spacing:0.04em;white-space:nowrap;}
   .result-body{padding:14px;display:flex;flex-direction:column;gap:14px;}
@@ -589,6 +592,14 @@ function ResultPanel({ result, hood, unitType, onReset, t }) {
 
   return (
     <div className="result-panel">
+      {/* Submission acknowledgement */}
+      <div className="result-thanks">
+        <div className="result-thanks-tag">Thank you</div>
+        <div className="result-thanks-text">
+          Your anonymous rent helps the next renter in Vancouver understand the market.
+          We only show grouped data, never individual submissions.
+        </div>
+      </div>
       {/* Score Hero */}
       <div className="score-hero" style={{ background:sl.bg, borderBottom:`1px solid ${sl.border}` }}>
         <div style={{ fontFamily:"var(--mono)", fontSize:10, color:"var(--t3)", textTransform:"uppercase", letterSpacing:".08em", marginBottom:8 }}>{t('scoreTitle')}</div>
