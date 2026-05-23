@@ -441,6 +441,14 @@ const CSS = `
   .share-btn{padding:8px 4px;font-size:11px;font-weight:700;text-decoration:none;text-align:center;cursor:pointer;border:none;}
   .sources{font-size:11px;color:var(--t3);line-height:1.6;padding-top:14px;border-top:1px solid var(--border);margin-top:20px;}
   .sources a{color:var(--t3);text-decoration:underline;}
+
+  .mobile-sticky-cta{display:none;}
+  @media(max-width:760px){
+    .mobile-sticky-cta{display:block;position:fixed;left:0;right:0;bottom:0;padding:10px 14px;background:rgba(28,43,54,0.96);border-top:1px solid #3d5a6e;z-index:50;backdrop-filter:saturate(140%) blur(6px);}
+    .mobile-sticky-cta a{display:block;background:#1a5c34;color:#fff;text-align:center;padding:12px;font-size:14px;font-weight:700;text-decoration:none;border-radius:3px;letter-spacing:0.02em;}
+    .page-wrap{padding-bottom:90px;}
+  }
+
   .email-cap{position:relative;margin-top:16px;padding:16px 18px;background:var(--accent-bg);border:1px solid #a8d5b5;border-left:3px solid var(--accent);}
   .email-cap-ok{background:#f0f7f2;}
   .email-cap-x{position:absolute;top:6px;right:8px;background:none;border:none;font-size:16px;color:var(--t3);cursor:pointer;line-height:1;padding:4px;}
@@ -1135,6 +1143,9 @@ export default function App() {
             <a href="https://fairrent.ca/privacy" style={{ color:"var(--t3)", marginLeft:6 }}>Privacy</a>
           </div>
         </div>
+      </div>
+      <div className="mobile-sticky-cta">
+        <a href="#top" onClick={e=>{e.preventDefault();window.scrollTo({top:0,behavior:'smooth'});}}>Submit my rent →</a>
       </div>
     </>
   );
