@@ -502,6 +502,9 @@ const CSS = `
     .gov-count{display:none;}
     .score-number{font-size:40px;}
   }
+
+  /* Accessibility: visible focus for keyboard users */
+  button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px;}
 `;
 
 // ─── Email Capture ────────────────────────────────────────────────────────────
@@ -535,14 +538,14 @@ function EmailCapture({ city, cityName }) {
       <div className="email-cap email-cap-ok">
         <strong>Thanks. You are on the list.</strong><br/>
         We&apos;ll email you the next monthly {cityName} rent report.{" "}
-        <button type="button" className="email-cap-x" onClick={()=>setHide(true)}>×</button>
+        <button type="button" className="email-cap-x" aria-label="Dismiss" onClick={()=>setHide(true)}>×</button>
       </div>
     );
   }
 
   return (
     <div className="email-cap">
-      <button type="button" className="email-cap-x" onClick={()=>{ try{localStorage.setItem("frc_email_"+city,"1");}catch{}; setHide(true); }} title="Dismiss">×</button>
+      <button type="button" className="email-cap-x" aria-label="Dismiss" onClick={()=>{ try{localStorage.setItem("frc_email_"+city,"1");}catch{}; setHide(true); }} title="Dismiss">×</button>
       <div className="email-cap-title">Get the monthly {cityName} rent report</div>
       <div className="email-cap-sub">One email per month. Free. Unsubscribe anytime. We never share your email.</div>
       <form onSubmit={submit} className="email-cap-form">
@@ -1178,7 +1181,7 @@ export default function App() {
         </div>
       </div>
       <div className="mobile-sticky-cta">
-        <a href="#top" onClick={e=>{e.preventDefault();window.scrollTo({top:0,behavior:'smooth'});}}>Submit my rent →</a>
+        <a href="#top" onClick={e=>{e.preventDefault();window.scrollTo({top:0,behavior:'smooth'});}}>Check my rent →</a>
       </div>
     </>
   );
