@@ -365,12 +365,12 @@ const CSS = `
   .page-heading p{font-size:13px;color:var(--t2);line-height:1.6;max-width:560px;}
 
   .hood-section{margin-bottom:20px;}
-  /* form-above-hoods: on mobile, put the calculator above the neighbourhood pill list */
+  /* form-first: on mobile, drop the page heading and neighbourhood pills above the form so the calculator is the first thing the user sees on landing. The SEO H1 stays in the DOM. */
   @media(max-width:760px){
     .page-wrap{display:flex;flex-direction:column;}
-    .page-wrap > div[style*="border-bottom"]{order:1;}  /* page heading stays at top */
-    .page-grid{order:2;}                                /* form comes next */
-    .hood-section{order:3;margin-top:20px;margin-bottom:8px;}  /* hood pills last */
+    .page-wrap > div[style*="border-bottom"]{display:none;}
+    .page-grid{order:1;}
+    .hood-section{order:2;display:none;}
   }
   .hood-label{font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;}
   .hood-pills{display:flex;flex-wrap:wrap;gap:6px;}
