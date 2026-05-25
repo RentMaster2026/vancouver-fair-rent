@@ -888,6 +888,21 @@ export default function App() {
     return () => window.removeEventListener('popstate', onPop);
   }, []);
 
+  // URL hash handler: if landing on /#form (or /#check), scroll to the form
+  // panel after React has actually rendered it. The browser's initial native
+  // hash-scroll runs before React mounts, so we redo it here.
+  useEffect(() => {
+    const target = window.location.hash?.replace('#','');
+    if (!target) return;
+    // Two attempts: one quick (covers fast render), one slower (covers Supabase fetch wait).
+    const tries = [60, 350];
+    const timers = tries.map(ms => setTimeout(() => {
+      const el = document.getElementById(target);
+      if (el) el.scrollIntoView({ behavior:'smooth', block:'start' });
+    }, ms));
+    return () => timers.forEach(clearTimeout);
+  }, []);
+
   useEffect(() => {
     const KEY = CITY+"_count_cache";
     try { const {count,ts}=JSON.parse(localStorage.getItem(KEY)||"{}"); if(Date.now()-ts<5*60*1000){setRawCount(count);setCountLoaded(true);} } catch{}
