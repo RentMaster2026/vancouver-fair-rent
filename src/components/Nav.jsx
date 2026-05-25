@@ -6,17 +6,24 @@
 //
 // Props:
 //   citySuffix?   string  e.g. "Ottawa", "Toronto", "Vancouver" (omit on hub)
-//   onWordmark?   fn      handler for clicking the wordmark; defaults to /
-//   actions       object  { onCheckRent, onShareRent, onForBusiness, onRentMap, onToggleLang, langLabel }
-//   labels        object  { checkRent, shareRent, forBusiness, rentMap, langLabel, menu, close }
+//   homeHref?     string  where the wordmark + "All cities" link points
+//                          - hub:    "/"        (default)
+//                          - cities: "https://fairrent.ca"
+//   onWordmark?   fn      optional handler instead of plain navigation
+//   actions       object  { onCheckRent, onShareRent, onForBusiness, onRentMap, onToggleLang }
+//   labels        object  { checkRent, shareRent, forBusiness, rentMap, langLabel, menu, close, allCities }
 
 import { useEffect, useState } from "react";
 
 const CSS = `
   .frc-nav{background:#1c2b36;border-bottom:3px solid #1a5c34;}
   .frc-nav-inner{max-width:1100px;margin:0 auto;padding:0 16px;height:52px;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+  .frc-wordmark-wrap{display:flex;align-items:center;gap:14px;min-width:0;}
   .frc-wordmark{font-size:14px;font-weight:600;color:#fff;text-decoration:none;white-space:nowrap;letter-spacing:0.01em;}
   .frc-wordmark span{font-weight:400;color:#aab8c2;margin-left:2px;}
+  .frc-back-link{font-size:11px;color:#aab8c2;text-decoration:none;letter-spacing:0.02em;white-space:nowrap;}
+  .frc-back-link:hover{color:#fff;text-decoration:underline;}
+  @media(max-width:560px){.frc-back-link{display:none;}}
 
   .frc-subnav{background:#2f4553;border-bottom:1px solid #3d5a6e;}
   .frc-subnav-inner{max-width:1100px;margin:0 auto;padding:0 16px;height:42px;display:flex;align-items:center;gap:24px;}
@@ -54,7 +61,7 @@ const CSS = `
   .frc-drawer-foot{padding:14px 22px;border-top:1px solid rgba(255,255,255,0.12);font-size:11px;color:#7a8d99;line-height:1.6;}
 `;
 
-export default function Nav({ citySuffix, onWordmark, actions = {}, labels = {} }) {
+export default function Nav({ citySuffix, homeHref, onWordmark, actions = {}, labels = {} }) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -76,8 +83,12 @@ export default function Nav({ citySuffix, onWordmark, actions = {}, labels = {} 
     langLabel: "Français",
     menu: "Menu",
     close: "Close",
+    allCities: "All cities",
     ...labels,
   };
+
+  const home = homeHref || "/";
+  const onCity = !!citySuffix && home !== "/";
 
   const fire = (fn) => () => {
     setOpen(false);
@@ -86,9 +97,11 @@ export default function Nav({ citySuffix, onWordmark, actions = {}, labels = {} 
   };
 
   const wordmarkClick = (e) => {
-    e.preventDefault();
-    if (typeof onWordmark === "function") onWordmark();
-    else window.location.href = "/";
+    if (typeof onWordmark === "function") {
+      e.preventDefault();
+      onWordmark();
+    }
+    // else: fall through, native link to `home` does the work
   };
 
   return (
@@ -96,9 +109,14 @@ export default function Nav({ citySuffix, onWordmark, actions = {}, labels = {} 
       <style>{CSS}</style>
       <nav className="frc-nav" aria-label="Primary">
         <div className="frc-nav-inner">
-          <a href="/" onClick={wordmarkClick} className="frc-wordmark">
-            FairRent{citySuffix ? <span>/ {citySuffix}</span> : null}
-          </a>
+          <div className="frc-wordmark-wrap">
+            <a href={home} onClick={wordmarkClick} className="frc-wordmark">
+              FairRent{citySuffix ? <span>/ {citySuffix}</span> : null}
+            </a>
+            {onCity && (
+              <a href={home} className="frc-back-link" aria-label={L.allCities}>← {L.allCities}</a>
+            )}
+          </div>
           <button className="frc-hamburger" onClick={() => setOpen(true)} aria-label={L.menu} aria-expanded={open}>
             <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
               <line x1="3" y1="6" x2="19" y2="6"/>
@@ -131,6 +149,9 @@ export default function Nav({ citySuffix, onWordmark, actions = {}, labels = {} 
           <button className="frc-drawer-link" onClick={fire(actions.onRentMap)}>{L.rentMap}</button>
           <button className="frc-drawer-link" onClick={fire(actions.onForBusiness)}>{L.forBusiness}</button>
           <button className="frc-drawer-link" onClick={fire(actions.onToggleLang)}>{L.langLabel}</button>
+          {onCity && (
+            <a className="frc-drawer-link" href={home} style={{ display:"block", textDecoration:"none" }}>← {L.allCities}</a>
+          )}
         </div>
         <div className="frc-drawer-foot">
           Anonymous renter submissions. Public market data. Informational only.

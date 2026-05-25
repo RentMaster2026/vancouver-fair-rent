@@ -4,7 +4,8 @@
 const CSS = `
   .frc-footer{background:#f5f5f5;border-top:1px solid #e1e5ea;margin-top:48px;}
   .frc-footer-inner{max-width:1100px;margin:0 auto;padding:32px 16px 28px;display:grid;grid-template-columns:1fr auto;gap:32px;align-items:start;}
-  .frc-footer-brand{font-size:14px;font-weight:600;color:#111;margin-bottom:8px;}
+  .frc-footer-brand{font-size:14px;font-weight:600;color:#111;margin-bottom:8px;text-decoration:none;display:inline-block;}
+  .frc-footer-brand:hover{color:#1a5c34;}
   .frc-footer-tag{font-size:12px;color:#5a6571;line-height:1.55;max-width:380px;}
   .frc-footer-grid{display:grid;grid-template-columns:repeat(4,minmax(120px,1fr));gap:16px 24px;}
   .frc-footer-col{display:flex;flex-direction:column;gap:6px;}
@@ -43,7 +44,7 @@ export default function Footer({ actions = {}, citySuffix }) {
       <footer className="frc-footer">
         <div className="frc-footer-inner">
           <div>
-            <div className="frc-footer-brand">FairRent Canada</div>
+            <a className="frc-footer-brand" href="https://fairrent.ca">FairRent Canada →</a>
             <div className="frc-footer-tag">
               Anonymous renter submissions and public market data. Compare your rent across Canadian cities. Informational only, not legal advice.
             </div>
