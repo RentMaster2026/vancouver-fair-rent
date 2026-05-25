@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import { createClient } from "@supabase/supabase-js";
 import NeighbourhoodPage from "./NeighbourhoodPage";
 import { VANCOUVER_HOODS, VANCOUVER_CITY } from "./hoodData";
+import Nav from "./components/Nav";
+import Footer from "./components/Footer";
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -971,33 +973,25 @@ export default function App() {
       <style>{CSS}</style>
       <div style={{ minHeight:"100vh", background:"var(--bg)" }}>
 
-        <div className="gov-nav">
-          <div className="gov-nav-inner">
-            <a href="https://fairrent.ca" className="gov-wordmark">
-              Fair Rent Canada <span>/ {CITY_NAME}</span>
-            </a>
-            <div style={{ display:"flex", alignItems:"center", gap:12 }}>
-              {countLoaded && (
-                <div className="gov-count">{displayCount.toLocaleString("en-CA")} {t('submissions')}</div>
-              )}
-              <button
-                onClick={toggleLang}
-                style={{ background:"transparent", border:"1px solid rgba(255,255,255,0.3)", color:"#fff", fontFamily:"var(--sans)", fontSize:12, fontWeight:500, padding:"5px 12px", cursor:"pointer", letterSpacing:".02em", borderRadius:3, flexShrink:0 }}
-                title={lang==='en'?"Passer en français":"Switch to English"}
-              >{t('langToggle')}</button>
-            </div>
-          </div>
-        </div>
-
-        <div className="gov-subbar">
-          <div className="gov-subbar-inner">
-            <a href="/map" style={{background:"#1a5c34",color:"#fff",padding:"3px 10px",borderRadius:"3px",fontWeight:600}}>{t('rentMap')}</a>
-            <a href="https://fairrent.ca">{t('allCities')}</a>
-            <a href="https://fairrent.ca/methodology">{t('methodology')}</a>
-            <a href="https://fairrent.ca/about">{t('about')}</a>
-            <a href="https://fairrent.ca/faq">{t('faq')}</a>
-          </div>
-        </div>
+        <Nav
+          citySuffix={"Vancouver"}
+          actions={{
+            onRentMap:     () => { window.location.href = "https://fairrent.ca/map"; },
+            onCheckRent:   () => { window.scrollTo({ top: 0, behavior: "smooth" }); },
+            onShareRent:   () => { window.scrollTo({ top: 0, behavior: "smooth" }); },
+            onForBusiness: () => { window.location.href = "https://fairrent.ca/intelligence"; },
+            onToggleLang:  toggleLang,
+          }}
+          labels={{
+            checkRent:   lang === "fr" ? "Vérifier mon loyer" : "Check Your Rent",
+            shareRent:   lang === "fr" ? "Partager mon loyer" : "Share Your Rent",
+            forBusiness: lang === "fr" ? "Entreprises"        : "For Business",
+            rentMap:     lang === "fr" ? "Carte des loyers"    : "Rent Map",
+            langLabel:   lang === "fr" ? "English"             : "Français",
+            menu:        lang === "fr" ? "Menu"                : "Menu",
+            close:       lang === "fr" ? "Fermer"              : "Close",
+          }}
+        />
 
         <div className="page-wrap">
 
@@ -1182,7 +1176,24 @@ export default function App() {
       </div>
       <div className="mobile-sticky-cta">
         <a href="#top" onClick={e=>{e.preventDefault();window.scrollTo({top:0,behavior:'smooth'});}}>Check my rent →</a>
-      </div>
+              <Footer
+          actions={{
+            onMap:         () => { window.location.href = "https://fairrent.ca/map"; },
+            onForBusiness: () => { window.location.href = "https://fairrent.ca/intelligence"; },
+            onBlog:        () => { window.location.href = "https://fairrent.ca/blog"; },
+            onNewcomers:   () => { window.location.href = "https://fairrent.ca/newcomers"; },
+            onStudents:    () => { window.location.href = "https://fairrent.ca/students"; },
+            onMethodology: () => { window.location.href = "https://fairrent.ca/methodology"; },
+            onAbout:       () => { window.location.href = "https://fairrent.ca/about"; },
+            onFaq:         () => { window.location.href = "https://fairrent.ca/faq"; },
+            onPrivacy:     () => { window.location.href = "https://fairrent.ca/privacy"; },
+            onContact:     () => { window.location.href = "https://fairrent.ca/contact"; },
+            onTerms:       () => { window.location.href = "https://fairrent.ca/terms"; },
+            onToggleLang:  toggleLang,
+          }}
+          citySuffix={"Vancouver"}
+        />
+</div>
     </>
   );
 }
