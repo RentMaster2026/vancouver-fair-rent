@@ -365,6 +365,13 @@ const CSS = `
   .page-heading p{font-size:13px;color:var(--t2);line-height:1.6;max-width:560px;}
 
   .hood-section{margin-bottom:20px;}
+  /* form-above-hoods: on mobile, put the calculator above the neighbourhood pill list */
+  @media(max-width:760px){
+    .page-wrap{display:flex;flex-direction:column;}
+    .page-wrap > div[style*="border-bottom"]{order:1;}  /* page heading stays at top */
+    .page-grid{order:2;}                                /* form comes next */
+    .hood-section{order:3;margin-top:20px;margin-bottom:8px;}  /* hood pills last */
+  }
   .hood-label{font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;}
   .hood-pills{display:flex;flex-wrap:wrap;gap:6px;}
   .hood-pill{padding:4px 10px;border:1px solid var(--border-dark);background:var(--white);font-size:12px;color:var(--t2);cursor:pointer;}
@@ -978,8 +985,8 @@ export default function App() {
           citySuffix={"Vancouver"}
           actions={{
             onRentMap:     () => { window.location.href = "https://fairrent.ca/map"; },
-            onCheckRent:   () => { window.scrollTo({ top: 0, behavior: "smooth" }); },
-            onShareRent:   () => { window.scrollTo({ top: 0, behavior: "smooth" }); },
+            onCheckRent:   () => { const el=document.getElementById("form"); if(el) el.scrollIntoView({behavior:"smooth",block:"start"}); else window.scrollTo({top:0,behavior:"smooth"}); },
+            onShareRent:   () => { const el=document.getElementById("form"); if(el) el.scrollIntoView({behavior:"smooth",block:"start"}); else window.scrollTo({top:0,behavior:"smooth"}); },
             onForBusiness: () => { window.location.href = "https://fairrent.ca/intelligence"; },
             onToggleLang:  toggleLang,
           }}
@@ -1029,7 +1036,7 @@ export default function App() {
 
             {/* LEFT: Form */}
             <div className="left-col">
-              <div className="form-panel">
+              <div id="form" className="form-panel" style={{scrollMarginTop:60}}>
                 <div className="form-panel-header">
                   <div className="form-panel-title">{t('formTitle')}</div>
                   <div className="form-panel-sub">{t('formSub')}</div>
@@ -1176,7 +1183,7 @@ export default function App() {
         </div>
       </div>
       <div className="mobile-sticky-cta">
-        <a href="#top" onClick={e=>{e.preventDefault();window.scrollTo({top:0,behavior:'smooth'});}}>Check my rent →</a>
+        <a href="#top" onClick={e=>{e.preventDefault();const el=document.getElementById('form');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});else window.scrollTo({top:0,behavior:'smooth'});}}>Check my rent →</a>
               <Footer
           actions={{
             onMap:         () => { window.location.href = "https://fairrent.ca/map"; },
