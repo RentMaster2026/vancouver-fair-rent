@@ -456,6 +456,10 @@ const CSS = `
   .notice a{color:inherit;font-weight:600;}
   .notice-green{background:#f0f7f2;border-color:var(--accent);color:#1a4a28;}
   .notice-amber{background:#fdf8f0;border-color:#b37a00;color:#5a3d00;}
+  /* Muted, government-style information panel (less marketing-y than .notice-green). */
+  .info-box{background:#fafbfc;border:1px solid #e3e7e3;border-left:3px solid #708a78;padding:12px 14px;margin:0;border-radius:2px;}
+  .info-box-label{font-size:10px;font-weight:600;color:#5a7060;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;}
+  .info-box-body{font-size:13px;color:#2f3a32;line-height:1.55;}
   .action-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
   .btn-secondary{padding:9px 12px;background:var(--white);border:1px solid var(--border-dark);color:var(--t2);font-size:13px;font-weight:600;cursor:pointer;text-align:center;}
   .btn-secondary:hover{background:#f0f0f0;}
@@ -466,9 +470,16 @@ const CSS = `
 
   .mobile-sticky-cta{display:none;}
   @media(max-width:760px){
-    .mobile-sticky-cta{display:block;position:fixed;left:0;right:0;bottom:0;padding:10px 14px;background:rgba(28,43,54,0.96);border-top:1px solid #3d5a6e;z-index:50;backdrop-filter:saturate(140%) blur(6px);}
-    .mobile-sticky-cta a{display:block;background:#1a5c34;color:#fff;text-align:center;padding:12px;font-size:14px;font-weight:700;text-decoration:none;border-radius:3px;letter-spacing:0.02em;}
-    .page-wrap{padding-bottom:90px;}
+    .mobile-sticky-cta{display:block;position:fixed;left:0;right:0;bottom:0;padding:6px 12px env(safe-area-inset-bottom);background:rgba(255,255,255,0.96);border-top:1px solid #d8dde2;z-index:50;backdrop-filter:saturate(140%) blur(8px);box-shadow:0 -1px 6px rgba(0,0,0,0.05);}
+    .mobile-sticky-cta a{display:block;background:#1a5c34;color:#fff;text-align:center;padding:11px;font-size:13px;font-weight:600;text-decoration:none;border-radius:4px;letter-spacing:0.01em;}
+    .page-wrap{padding-bottom:68px;}
+    .frc-footer{margin-bottom:68px;}   /* keep footer above the sticky CTA */
+    /* Calculator mobile ergonomics */
+    .form-body{padding:16px;gap:16px;}
+    .f-input,.f-select{padding:11px 12px;font-size:15px;}
+    .f-select{padding-right:34px;}
+    .field-label{font-size:11px;color:#5a6571;letter-spacing:0.03em;margin-bottom:5px;}
+    .field-note{font-size:11px;color:#8a939c;line-height:1.5;margin-top:4px;}
   }
 
   .email-cap{position:relative;margin-top:16px;padding:16px 18px;background:var(--accent-bg);border:1px solid #a8d5b5;border-left:3px solid var(--accent);}
@@ -1100,8 +1111,9 @@ export default function App() {
                   </div>
 
                   {/* No rent control question needed for BC: it applies to ALL tenancies */}
-                  <div className="notice notice-green" style={{ margin:0 }}>
-                    <strong>{t('bcRCNotice')}</strong>
+                  <div className="info-box">
+                    <div className="info-box-label">BC rent control</div>
+                    <div className="info-box-body">{t('bcRCNotice')}</div>
                   </div>
 
                   {/* Toggles */}
