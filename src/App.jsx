@@ -68,18 +68,18 @@ const MEDIAN_PSF = { bachelor:5.10, "1br":4.20, "2br":3.70, "3br":3.30, "3plus":
 const STRINGS = {
   en: {
     submissions:"submissions", rentMap:"Rent Map", allCities:"All cities",
-    methodology:"Methodology", about:"About", faq:"FAQ", langToggle:"FR",
+    methodology:"Methodology", about:"About", faq:"FAQ", langToggle:"Français",
     pageTitle:`${CITY_NAME} Rent Calculator: Check If Your Rent Is Fair`,
     pageDesc:`Find out if your ${CITY_NAME} rent is fair. Compare what you pay to real market data from CMHC and local renter submissions. Free. Anonymous. No account required. BC rent control applies to all tenancies.`,
     browseByHood:"Browse by neighbourhood",
     formTitle:"Enter your rental details", formSub:"Anonymous. No signup. Takes about 60 seconds.",
-    labelHood:"Neighbourhood", labelUnit:"Unit type", labelRent:"Monthly rent (CAD)", labelYear:"Year moved in",
+    labelHood:"Neighbourhood", labelUnit:"Unit type", labelRent:"Monthly rent (CAD)", labelYear:"Year moved in", rentMicro:"What you actually pay each month, including any included parking or utilities.", yearMicro:"Used to compare against rents from the same year and apply rent control where it applies.",
     labelSqft:"Unit size in sq ft", sqftOptional:"optional",
     sqftNote:"Adding your unit size improves your score accuracy. Vancouver has many micro-units where price per square foot reveals the true cost.",
     labelParking:"Parking", parkingSub:"+$250/mo added to benchmark",
     labelUtilities:"Utilities", utilitiesSub:"+$120/mo added to benchmark",
     rentIncludes:"Rent includes",
-    bcRCNotice:"BC rent control applies to your unit. British Columbia caps annual rent increases for all residential tenancies at 3.0% for 2025. We will estimate your legal maximum automatically.",
+    bcRCNotice:"BC rent control applies to all residential tenancies. The BC government sets an annual rent increase guideline (3.0% for 2025; 3.0% for 2026). We will show an estimated cap based on your move-in rent. Confirm any specific rules with the BC Residential Tenancy Branch.",
     selectDots:"Select...", btnCompare:"Compare my rent", btnProcessing:"Processing...",
     anonNote:"Anonymous · No signup · Never sold as personal data",
     errHood:"Select a neighbourhood", errUnit:"Select a unit type",
@@ -112,11 +112,11 @@ const STRINGS = {
     benchLblMidpoint:"Benchmark (midpoint)",
     bcRC:"BC rent control",
     bcRCApplies:"BC rent control applies.",
-    bcRCDesc:"British Columbia caps annual rent increases for existing tenants at the provincial guideline rate. The 2026 guideline is 3.0%. Based on your move-in rent, the estimated legal maximum today is",
-    bcRCOver:r=>`Your current rent of ${r} may exceed this cap. You may have grounds to dispute the increase with the Residential Tenancy Branch.`,
-    bcRCWithin:r=>`Your rent of ${r} is within the estimated legal maximum.`,
-    bcRCLink:"BC rent increase guidelines →",
-    bcRCNote:"In BC, rent control applies to all residential tenancies regardless of when the unit was built. This is different from Ontario, where units first occupied after November 15, 2018 are exempt.",
+    bcRCDesc:"BC caps annual rent increases for existing tenants at the provincial guideline (3.0% for 2025; 3.0% for 2026). Compounding your move-in rent forward by each year's guideline gives an estimated cap of",
+    bcRCOver:r=>`Your current rent of ${r} appears higher than this estimated cap. This is informational only. Confirm specifics with the BC Residential Tenancy Branch.`,
+    bcRCWithin:r=>`Your rent of ${r} is within the estimated cap.`,
+    bcRCLink:"BC Residential Tenancy Branch →",
+    bcRCNote:"In BC, rent control applies to all residential tenancies regardless of when the unit was built. This is different from Ontario, where units first occupied after November 15, 2018 are exempt between tenancies. FairRent is informational only and does not provide legal advice. Always confirm rules with the BC Residential Tenancy Branch.",
     startOver:"Start over", shareResult:"Share result", shareLabel:"Share", copyLink:"Copy link", copied:"Copied",
     whatYouGet:"What you will receive",
     resultItems:["Fair Rent Canada Score (1 to 10)","Estimated fair rent range for your neighbourhood","Price per square foot comparison (if size provided)","BC rent control status and estimated legal maximum"],
@@ -143,7 +143,7 @@ const STRINGS = {
     labelParking:"Stationnement", parkingSub:"+250 $/mois ajouté à la référence",
     labelUtilities:"Services publics", utilitiesSub:"+120 $/mois ajouté à la référence",
     rentIncludes:"Le loyer comprend",
-    bcRCNotice:"Le contrôle des loyers de la C.-B. s'applique à votre logement. La Colombie-Britannique plafonne les augmentations annuelles de loyer pour tous les logements résidentiels à 3,0 % pour 2025. Nous estimerons votre maximum légal automatiquement.",
+    bcRCNotice:"Le contrôle des loyers s'applique à tous les logements résidentiels en C.-B. Le gouvernement fixe un taux directeur annuel (3,0 % en 2025; 3,0 % en 2026). Nous afficherons un plafond estimé à partir de votre loyer d'emménagement. Confirmez les règles précises auprès de la Direction des locations résidentielles.",
     selectDots:"Sélectionner...", btnCompare:"Comparer mon loyer", btnProcessing:"Traitement en cours...",
     anonNote:"Anonyme · Aucun compte requis · Aucune donnée personnelle stockée",
     errHood:"Sélectionnez un quartier", errUnit:"Sélectionnez un type de logement",
@@ -177,10 +177,10 @@ const STRINGS = {
     bcRC:"Contrôle des loyers en C.-B.",
     bcRCApplies:"Le contrôle des loyers de la C.-B. s'applique.",
     bcRCDesc:"La Colombie-Britannique plafonne les augmentations annuelles de loyer pour les locataires existants au taux directeur provincial. Le taux directeur 2026 est de 3,0 %. Selon votre loyer d'emménagement, le maximum légal estimé aujourd'hui est",
-    bcRCOver:r=>`Votre loyer actuel de ${r} pourrait dépasser ce plafond. Vous pourriez contester l'augmentation auprès de la Direction des locations résidentielles.`,
-    bcRCWithin:r=>`Votre loyer de ${r} est dans le maximum légal estimé.`,
-    bcRCLink:"Directives d'augmentation de loyer en C.-B. →",
-    bcRCNote:"En C.-B., le contrôle des loyers s'applique à toutes les locations résidentielles, peu importe la date de construction. C'est différent de l'Ontario, où les logements occupés pour la première fois après le 15 novembre 2018 sont exemptés.",
+    bcRCOver:r=>`Votre loyer actuel de ${r} semble supérieur à ce plafond estimé. Ceci est à titre informatif seulement. Confirmez les détails auprès de la Direction des locations résidentielles.`,
+    bcRCWithin:r=>`Votre loyer de ${r} est dans le plafond estimé.`,
+    bcRCLink:"Direction des locations résidentielles →",
+    bcRCNote:"En C.-B., le contrôle des loyers s'applique à toutes les locations résidentielles, peu importe la date de construction. C'est différent de l'Ontario, où les logements occupés après le 15 novembre 2018 sont exemptés entre locataires. FairRent est un outil informatif et ne fournit pas de conseils juridiques. Confirmez toujours les règles auprès de la Direction des locations résidentielles de la C.-B.",
     startOver:"Recommencer", shareResult:"Partager le résultat", shareLabel:"Partager", copyLink:"Copier le lien", copied:"Copié",
     whatYouGet:"Ce que vous recevrez",
     resultItems:["Indice FairRent Canada (1 à 10)","Fourchette de loyer juste estimée pour votre quartier","Comparaison du prix au pi² (si la superficie est fournie)","Statut du contrôle des loyers en C.-B. et maximum légal estimé"],
@@ -982,7 +982,7 @@ export default function App() {
               )}
               <button
                 onClick={toggleLang}
-                style={{ background:"rgba(255,255,255,0.12)", border:"1px solid rgba(255,255,255,0.25)", color:"#fff", fontFamily:"var(--sans)", fontSize:11, fontWeight:700, padding:"3px 8px", cursor:"pointer", letterSpacing:".04em", borderRadius:3, flexShrink:0 }}
+                style={{ background:"transparent", border:"1px solid rgba(255,255,255,0.3)", color:"#fff", fontFamily:"var(--sans)", fontSize:12, fontWeight:500, padding:"5px 12px", cursor:"pointer", letterSpacing:".02em", borderRadius:3, flexShrink:0 }}
                 title={lang==='en'?"Passer en français":"Switch to English"}
               >{t('langToggle')}</button>
             </div>
