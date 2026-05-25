@@ -25,11 +25,14 @@ const CSS = `
 // Default link config. Cities can override individual handlers via props.actions.
 //
 // Props:
-//   actions  object with { onOttawa, onToronto, onVancouver, onMap, onContact,
-//                          onPrivacy, onMethodology, onAbout, onFaq, onTerms,
-//                          onForBusiness, onToggleLang }
+//   actions   object with { onOttawa, onToronto, onVancouver, onMap, onContact,
+//                            onPrivacy, onMethodology, onAbout, onFaq, onTerms,
+//                            onForBusiness, onToggleLang }
 //   citySuffix?  string for the bottom legal line
-export default function Footer({ actions = {}, citySuffix }) {
+//   compact?     boolean — on city subdomains we render a 1-line footer so the
+//                page does not feel like it ends in a tall list of options.
+//                The hub keeps the full 4-column version.
+export default function Footer({ actions = {}, citySuffix, compact = false }) {
   const year = new Date().getFullYear();
   const click = (fn, fallbackHref) => (e) => {
     if (typeof fn === "function") {
@@ -38,6 +41,26 @@ export default function Footer({ actions = {}, citySuffix }) {
       fn();
     }
   };
+
+  if (compact) {
+    return (
+      <>
+        <style>{CSS}</style>
+        <footer className="frc-footer" style={{ marginTop:32 }}>
+          <div className="frc-footer-bottom" style={{ padding:"14px 16px", borderTop:"none", justifyContent:"center", gap:14, textAlign:"center" }}>
+            <span style={{ display:"block", width:"100%", marginBottom:4 }}>
+              © {year} FairRent Canada{citySuffix ? ` · ${citySuffix}` : ""}. Informational only — not legal or financial advice.
+            </span>
+            <a href="https://fairrent.ca">FairRent Canada</a>
+            <a href="https://fairrent.ca/methodology">Methodology</a>
+            <a href="https://fairrent.ca/privacy">Privacy</a>
+            <a href="https://fairrent.ca/contact">Contact</a>
+          </div>
+        </footer>
+      </>
+    );
+  }
+
   return (
     <>
       <style>{CSS}</style>

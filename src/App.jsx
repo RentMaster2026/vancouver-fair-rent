@@ -1214,6 +1214,7 @@ export default function App() {
             onTerms:       () => { window.location.href = "https://fairrent.ca/terms"; },
             onToggleLang:  toggleLang,
           }}
+          compact={true}
           citySuffix={"Vancouver"}
         />
 </div>
