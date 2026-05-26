@@ -211,6 +211,66 @@ export default function NeighbourhoodPage({ hood, city, onBack }) {
     });
   }, [hood.name, city.key]);
 
+  // Neighbourhood-specific metadata (title, description, canonical, OpenGraph,
+  // Twitter). Each neighbourhood page is the canonical SEO surface for
+  // "average rent in <hood>, <city>" queries.
+  useEffect(() => {
+    const slug = hood.slug || hood.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    const url       = `${city.calcUrl}/${slug}`;
+    const fullTitle = `Average rent in ${hood.name}, ${city.name} | FairRent Canada`;
+    const desc      = `See what renters pay in ${hood.name}, ${city.name}. Compare your rent against CMHC data, market listings and anonymous submissions from renters who live here. Free. Anonymous. No sign-up.`;
+
+    const prevTitle = document.title;
+    document.title = fullTitle;
+
+    const setMeta = (sel, attr, value) => {
+      let el = document.querySelector(sel);
+      if (!el) {
+        el = document.createElement('meta');
+        const [k, v] = sel.replace(/[\[\]"]/g, '').split('=');
+        el.setAttribute(k, v);
+        document.head.appendChild(el);
+      }
+      const prev = el.getAttribute(attr);
+      el.setAttribute(attr, value);
+      return prev;
+    };
+    const setLink = (rel, href) => {
+      let el = document.querySelector(`link[rel="${rel}"]`);
+      if (!el) {
+        el = document.createElement('link');
+        el.setAttribute('rel', rel);
+        document.head.appendChild(el);
+      }
+      const prev = el.getAttribute('href');
+      el.setAttribute('href', href);
+      return prev;
+    };
+
+    const prevDesc = setMeta('meta[name="description"]', 'content', desc);
+    const prevOgT  = setMeta('meta[property="og:title"]', 'content', fullTitle);
+    const prevOgD  = setMeta('meta[property="og:description"]', 'content', desc);
+    const prevOgU  = setMeta('meta[property="og:url"]', 'content', url);
+    const prevOgTy = setMeta('meta[property="og:type"]', 'content', 'article');
+    const prevTwT  = setMeta('meta[name="twitter:title"]', 'content', fullTitle);
+    const prevTwD  = setMeta('meta[name="twitter:description"]', 'content', desc);
+    const prevTwC  = setMeta('meta[name="twitter:card"]', 'content', 'summary_large_image');
+    const prevCan  = setLink('canonical', url);
+
+    return () => {
+      document.title = prevTitle;
+      if (prevDesc != null) setMeta('meta[name="description"]', 'content', prevDesc);
+      if (prevOgT  != null) setMeta('meta[property="og:title"]', 'content', prevOgT);
+      if (prevOgD  != null) setMeta('meta[property="og:description"]', 'content', prevOgD);
+      if (prevOgU  != null) setMeta('meta[property="og:url"]', 'content', prevOgU);
+      if (prevOgTy != null) setMeta('meta[property="og:type"]', 'content', prevOgTy);
+      if (prevTwT  != null) setMeta('meta[name="twitter:title"]', 'content', prevTwT);
+      if (prevTwD  != null) setMeta('meta[name="twitter:description"]', 'content', prevTwD);
+      if (prevTwC  != null) setMeta('meta[name="twitter:card"]', 'content', prevTwC);
+      if (prevCan  != null) setLink('canonical', prevCan);
+    };
+  }, [hood.name, hood.slug, city.name, city.calcUrl]);
+
   const totalSubmissions = Object.values(submissions).reduce((a, b) => a + b.count, 0);
   const pct = hood.vsAvgPct;
   const vsText  = pct > 0 ? `${pct}% above the ${city.name} average`
