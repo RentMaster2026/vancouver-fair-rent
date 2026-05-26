@@ -5,9 +5,12 @@
 //   citySuffix?   string  e.g. "Ottawa" — appended to wordmark on city sites
 //   homeHref?     string  where the wordmark points (hub: "/", cities: "https://fairrent.ca")
 //   onWordmark?   fn      optional handler instead of plain navigation
-//   actions       object  { onBlog, onExploreCities, onNeighbourhoods, onSubmitRent, onAbout, onToggleLang }
+//   actions       object  { onExploreCities, onNeighbourhoods, onBlog, onAbout, onSubmitRent, onToggleLang }
 //   labels        object  optional override of the default English labels
-//   activeKey?    string  one of "blog"|"cities"|"neighbourhoods"|"submit"|"about" — highlights current nav item
+//   activeKey?    string  one of "cities"|"neighbourhoods"|"blog"|"about" — highlights current nav item
+//
+// The persistent green "Share my rent" CTA on the right of the header uses
+// onSubmitRent; there is no separate "Share my rent" nav item.
 
 import { useEffect, useState } from "react";
 
@@ -79,15 +82,15 @@ export default function Nav({ citySuffix, homeHref, onWordmark, actions = {}, la
   }, [open]);
 
   const L = {
-    blog: "Blog",
     cities: "Cities",
     neighbourhoods: "Neighbourhoods",
-    submit: "Share my rent",
+    blog: "Blog",
     about: "About",
     langLabel: "Français",
     menu: "Menu",
     close: "Close",
     primaryCta: "Share my rent",
+    submit: "Share my rent", // used by mobile drawer primary CTA
     ...labels,
   };
 
@@ -107,10 +110,9 @@ export default function Nav({ citySuffix, homeHref, onWordmark, actions = {}, la
   };
 
   const navItems = [
-    { key: "blog",           label: L.blog,           fn: actions.onBlog },
     { key: "cities",         label: L.cities,         fn: actions.onExploreCities },
     { key: "neighbourhoods", label: L.neighbourhoods, fn: actions.onNeighbourhoods },
-    { key: "submit",         label: L.submit,         fn: actions.onSubmitRent },
+    { key: "blog",           label: L.blog,           fn: actions.onBlog },
     { key: "about",          label: L.about,          fn: actions.onAbout },
   ];
 

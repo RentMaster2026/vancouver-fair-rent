@@ -83,11 +83,8 @@ const CSS = `
   .hood-meta{display:flex;flex-wrap:wrap;gap:8px 22px;font-size:12.5px;color:var(--t3);margin-bottom:18px;}
   .hood-meta strong{color:var(--t1);font-weight:600;}
   .hood-meta .meta-sep{color:var(--t4);}
-  .hood-vs{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;padding:6px 12px;border-radius:999px;margin-bottom:18px;}
-  .vs-up{background:#fef5e9;color:#7a4f00;}
-  .vs-down{background:#eef3fb;color:#1a3a8b;}
-  .vs-flat{background:var(--accent-soft);color:var(--accent);}
-  .vs-dot{width:6px;height:6px;border-radius:50%;background:currentColor;}
+  .hood-vs{display:inline-block;font-family:var(--serif);font-size:16px;font-style:italic;color:var(--t2);margin-bottom:18px;line-height:1.5;}
+  .hood-vs strong{color:var(--t1);font-style:normal;font-weight:600;}
   .hood-cta-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;}
   .btn{display:inline-flex;align-items:center;justify-content:center;padding:11px 18px;font-size:14px;font-weight:600;border-radius:6px;border:1px solid transparent;font-family:inherit;cursor:pointer;text-decoration:none;line-height:1.2;}
   .btn-primary{background:var(--accent);color:#fff;border-color:var(--accent);}
@@ -112,23 +109,19 @@ const CSS = `
   .snap-table td{padding:14px 16px;border-bottom:1px solid var(--border-soft);color:var(--t1);}
   .snap-table tr:last-child td{border-bottom:none;}
   .snap-table td:nth-child(2){font-variant-numeric:tabular-nums;font-weight:600;}
-  .conf{display:inline-block;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:600;letter-spacing:0.02em;}
-  .conf-base{background:#f1f3f5;color:#5b6770;}
-  .conf-strong{background:var(--accent-soft);color:var(--accent);}
-  .conf-growing{background:#fef5e9;color:#7a4f00;}
-  .conf-limited{background:#f3eefb;color:#5a3aa8;}
+  /* Confidence is rendered as plain text annotation, not a coloured pill.
+     Visually quieter and reads like editorial rather than a data dashboard. */
+  .conf{font-size:13px;color:var(--t3);font-style:italic;}
+  .conf-strong{color:var(--accent);font-style:normal;font-weight:600;}
   .src-line{font-size:12.5px;color:var(--t3);margin-top:12px;line-height:1.55;max-width:720px;}
 
   /* Empty / building-data notice */
   .data-notice{padding:16px 18px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--t2);font-size:14px;line-height:1.6;margin-top:16px;}
   .data-notice strong{color:var(--t1);}
 
-  /* Privacy callout */
-  .privacy-callout{display:flex;align-items:flex-start;gap:12px;padding:16px 18px;background:var(--surface);border:1px solid var(--border);border-radius:8px;}
-  .privacy-callout svg{flex-shrink:0;color:var(--accent);width:20px;height:20px;margin-top:2px;}
-  .privacy-callout p{font-size:13.5px;color:var(--t2);line-height:1.6;}
-  .privacy-callout strong{color:var(--t1);font-weight:600;}
-  .privacy-callout a{font-weight:600;}
+  /* Privacy note — plain inline editorial line, not a boxed callout */
+  .privacy-line{font-size:14px;color:var(--t3);line-height:1.65;margin-top:12px;}
+  .privacy-line strong{color:var(--t2);font-weight:600;}
 
   /* Help-improve panel */
   .help-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:24px;}
@@ -220,7 +213,6 @@ export default function NeighbourhoodPage({ hood, city, onBack }) {
 
   const totalSubmissions = Object.values(submissions).reduce((a, b) => a + b.count, 0);
   const pct = hood.vsAvgPct;
-  const vsClass = pct > 0 ? "vs-up" : pct < 0 ? "vs-down" : "vs-flat";
   const vsText  = pct > 0 ? `${pct}% above the ${city.name} average`
                 : pct < 0 ? `${Math.abs(pct)}% below the ${city.name} average`
                 : `in line with the ${city.name} average`;
@@ -356,7 +348,7 @@ export default function NeighbourhoodPage({ hood, city, onBack }) {
                 </>
               )}
             </div>
-            <span className={"hood-vs " + vsClass}><span className="vs-dot"/>{hood.name} rents are {vsText}</span>
+            <p className="hood-vs"><strong>{hood.name} rents</strong> are {vsText}.</p>
             <div className="hood-cta-row">
               <a className="btn btn-primary" href={checkUrl}>Share my rent in {hood.name}</a>
               <a className="btn btn-ghost" href={mapUrl}>Explore the {city.name} map</a>
@@ -399,18 +391,10 @@ export default function NeighbourhoodPage({ hood, city, onBack }) {
             )}
           </section>
 
-          {/* PRIVACY CALLOUT */}
-          <section className="section">
-            <div className="privacy-callout">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M12 1l8 4v6c0 5.25-3.5 9.74-8 11-4.5-1.26-8-5.75-8-11V5l8-4z"/>
-                <polyline points="9 12 11 14 15 10"/>
-              </svg>
-              <p>
-                <strong>Privacy comes first.</strong> We never collect your name or email and we never display individual rent submissions on this page. The numbers above are aggregated ranges across many anonymous submissions. <a href={privacyUrl}>Read the privacy policy</a>.
-              </p>
-            </div>
-          </section>
+          {/* Privacy note — inline, not a boxed callout */}
+          <p className="privacy-line">
+            <strong>Privacy comes first.</strong> We never collect your name or email and we never display individual rent submissions on this page. The numbers above are aggregated ranges across many anonymous submissions. <a href={privacyUrl}>Read the privacy policy</a>.
+          </p>
 
           {/* LOCAL CONTEXT */}
           <section className="section">
