@@ -1,67 +1,70 @@
-// Shared Nav — identical copy lives in each city repo (no shared package layer).
-// Renders:
-//   - Top bar: wordmark + mobile hamburger
-//   - Sub bar (desktop): 5 items (Rent Map, Check, Share, For Business, Français)
-//   - Mobile drawer: stacked nav links
+// Shared Nav — copy lives in each city repo (no shared package layer).
+// Glassdoor-inspired renter-first nav. Light header, soft green accents, no B2B.
 //
 // Props:
-//   citySuffix?   string  e.g. "Ottawa", "Toronto", "Vancouver" (omit on hub)
-//   homeHref?     string  where the wordmark + "All cities" link points
-//                          - hub:    "/"        (default)
-//                          - cities: "https://fairrent.ca"
+//   citySuffix?   string  e.g. "Ottawa" — appended to wordmark on city sites
+//   homeHref?     string  where the wordmark points (hub: "/", cities: "https://fairrent.ca")
 //   onWordmark?   fn      optional handler instead of plain navigation
-//   actions       object  { onCheckRent, onShareRent, onForBusiness, onRentMap, onToggleLang }
-//   labels        object  { checkRent, shareRent, forBusiness, rentMap, langLabel, menu, close, allCities }
+//   actions       object  { onBlog, onExploreCities, onNeighbourhoods, onSubmitRent, onAbout, onToggleLang }
+//   labels        object  optional override of the default English labels
+//   activeKey?    string  one of "blog"|"cities"|"neighbourhoods"|"submit"|"about" — highlights current nav item
 
 import { useEffect, useState } from "react";
 
 const CSS = `
-  .frc-nav{background:#1c2b36;border-bottom:3px solid #1a5c34;}
-  .frc-nav-inner{max-width:1100px;margin:0 auto;padding:0 16px;height:52px;display:flex;align-items:center;justify-content:space-between;gap:16px;}
-  .frc-wordmark-wrap{display:flex;align-items:center;gap:14px;min-width:0;}
-  .frc-wordmark{font-size:14px;font-weight:600;color:#fff;text-decoration:none;white-space:nowrap;letter-spacing:0.01em;}
-  .frc-wordmark span{font-weight:400;color:#aab8c2;margin-left:2px;}
-  .frc-back-link{font-size:11px;color:#aab8c2;text-decoration:none;letter-spacing:0.02em;white-space:nowrap;}
-  .frc-back-link:hover{color:#fff;text-decoration:underline;}
-  @media(max-width:560px){.frc-back-link{display:none;}}
+  .frc-nav{background:#fff;border-bottom:1px solid #e5e7eb;box-shadow:0 1px 0 rgba(0,0,0,0.02);}
+  .frc-nav-inner{max-width:1180px;margin:0 auto;padding:0 20px;height:60px;display:flex;align-items:center;justify-content:space-between;gap:24px;}
+  .frc-wordmark-wrap{display:flex;align-items:baseline;gap:8px;min-width:0;}
+  .frc-wordmark{font-size:18px;font-weight:700;color:#0e7c3a;text-decoration:none;white-space:nowrap;letter-spacing:-0.01em;}
+  .frc-wordmark .frc-city{font-size:14px;font-weight:500;color:#5b6770;margin-left:6px;}
 
-  .frc-subnav{background:#2f4553;border-bottom:1px solid #3d5a6e;}
-  .frc-subnav-inner{max-width:1100px;margin:0 auto;padding:0 16px;height:42px;display:flex;align-items:center;gap:24px;}
-  .frc-subnav-item{background:none;border:none;color:#dde6ec;font-size:13px;font-weight:500;cursor:pointer;padding:0;font-family:inherit;letter-spacing:0.01em;}
-  .frc-subnav-item:hover{color:#fff;}
-  .frc-subnav-item.frc-share{margin-left:auto;background:#1a5c34;color:#fff;padding:6px 14px;border-radius:3px;font-weight:600;}
-  .frc-subnav-item.frc-share:hover{background:#15492a;}
-  .frc-subnav-item.frc-lang{font-size:12px;color:#aab8c2;border:1px solid rgba(255,255,255,0.18);padding:5px 12px;border-radius:3px;}
-  .frc-subnav-item.frc-lang:hover{color:#fff;border-color:rgba(255,255,255,0.35);}
+  .frc-primary{display:flex;align-items:center;gap:4px;}
+  .frc-primary-item{background:none;border:none;color:#1d2a35;font-size:14px;font-weight:500;cursor:pointer;padding:8px 14px;border-radius:6px;font-family:inherit;letter-spacing:0;line-height:1;text-decoration:none;display:inline-flex;align-items:center;}
+  .frc-primary-item:hover{background:#f4f6f8;color:#0e7c3a;}
+  .frc-primary-item.is-active{color:#0e7c3a;}
+  .frc-primary-item.is-active::after{content:"";display:block;height:2px;background:#0e7c3a;margin-top:4px;}
 
-  .frc-hamburger{display:none;background:none;border:none;color:#fff;font-size:22px;cursor:pointer;padding:6px 8px;line-height:1;}
+  .frc-right{display:flex;align-items:center;gap:10px;}
+  .frc-lang{background:none;border:1px solid #d6dade;color:#5b6770;font-size:12px;font-weight:600;cursor:pointer;padding:6px 12px;border-radius:6px;font-family:inherit;letter-spacing:0.02em;}
+  .frc-lang:hover{border-color:#0e7c3a;color:#0e7c3a;}
+  .frc-cta{background:#0e7c3a;color:#fff;border:none;padding:9px 16px;border-radius:6px;font-weight:600;font-size:14px;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-flex;align-items:center;line-height:1;}
+  .frc-cta:hover{background:#0a6630;}
+
+  .frc-hamburger{display:none;background:none;border:none;color:#1d2a35;cursor:pointer;padding:8px;line-height:1;border-radius:6px;}
+  .frc-hamburger:hover{background:#f4f6f8;}
   .frc-hamburger svg{display:block;}
 
-  @media(max-width:760px){
-    .frc-nav-inner{height:52px;}
-    .frc-subnav{display:none;}
+  @media(max-width:880px){
+    .frc-primary{display:none;}
+    .frc-right .frc-lang{display:none;}
     .frc-hamburger{display:block;}
+  }
+  @media(max-width:520px){
+    .frc-nav-inner{padding:0 14px;height:56px;}
+    .frc-right .frc-cta{padding:8px 12px;font-size:13px;}
   }
 
   /* Mobile drawer */
-  .frc-drawer-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:60;opacity:0;pointer-events:none;transition:opacity .15s ease;}
+  .frc-drawer-backdrop{position:fixed;inset:0;background:rgba(15,22,28,0.45);z-index:60;opacity:0;pointer-events:none;transition:opacity .15s ease;}
   .frc-drawer-backdrop.open{opacity:1;pointer-events:auto;}
-  .frc-drawer{position:fixed;top:0;right:0;bottom:0;width:min(320px,82vw);background:#1c2b36;color:#fff;z-index:61;transform:translateX(100%);transition:transform .2s ease;display:flex;flex-direction:column;}
+  .frc-drawer{position:fixed;top:0;right:0;bottom:0;width:min(340px,86vw);background:#fff;color:#1d2a35;z-index:61;transform:translateX(100%);transition:transform .22s ease;display:flex;flex-direction:column;}
   .frc-drawer.open{transform:translateX(0);}
-  .frc-drawer-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,0.12);height:52px;}
-  .frc-drawer-head-title{font-size:13px;font-weight:600;color:#fff;}
-  .frc-drawer-head-title span{color:#aab8c2;font-weight:400;}
-  .frc-drawer-close{background:none;border:none;color:#aab8c2;font-size:22px;cursor:pointer;line-height:1;padding:4px 8px;}
-  .frc-drawer-close:hover{color:#fff;}
-  .frc-drawer-body{padding:10px 0;flex-grow:1;overflow-y:auto;}
-  .frc-drawer-link{display:block;padding:14px 22px;background:none;border:none;color:#fff;font-size:15px;font-weight:500;text-align:left;width:100%;cursor:pointer;font-family:inherit;border-bottom:1px solid rgba(255,255,255,0.06);}
-  .frc-drawer-link:hover{background:rgba(255,255,255,0.05);}
-  .frc-drawer-link.primary{background:#1a5c34;border-bottom:none;}
-  .frc-drawer-link.primary:hover{background:#15492a;}
-  .frc-drawer-foot{padding:14px 22px;border-top:1px solid rgba(255,255,255,0.12);font-size:11px;color:#7a8d99;line-height:1.6;}
+  .frc-drawer-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #eef0f2;height:60px;}
+  .frc-drawer-head-title{font-size:16px;font-weight:700;color:#0e7c3a;}
+  .frc-drawer-head-title .frc-city{font-size:13px;font-weight:500;color:#5b6770;margin-left:6px;}
+  .frc-drawer-close{background:none;border:none;color:#5b6770;font-size:26px;cursor:pointer;line-height:1;padding:4px 10px;border-radius:6px;}
+  .frc-drawer-close:hover{background:#f4f6f8;color:#1d2a35;}
+  .frc-drawer-body{padding:8px 0;flex-grow:1;overflow-y:auto;}
+  .frc-drawer-link{display:block;padding:16px 22px;background:none;border:none;color:#1d2a35;font-size:16px;font-weight:500;text-align:left;width:100%;cursor:pointer;font-family:inherit;border:none;}
+  .frc-drawer-link:hover,.frc-drawer-link:focus{background:#f4f6f8;color:#0e7c3a;}
+  .frc-drawer-cta{margin:14px 18px 6px;display:block;background:#0e7c3a;color:#fff;text-align:center;padding:14px;border:none;border-radius:8px;font-weight:700;font-size:15px;cursor:pointer;font-family:inherit;text-decoration:none;}
+  .frc-drawer-cta:hover{background:#0a6630;}
+  .frc-drawer-divider{height:1px;background:#eef0f2;margin:8px 0;}
+  .frc-drawer-lang{margin:6px 18px;background:none;border:1px solid #d6dade;color:#5b6770;font-size:13px;font-weight:600;cursor:pointer;padding:10px;border-radius:6px;font-family:inherit;width:calc(100% - 36px);}
+  .frc-drawer-foot{padding:14px 22px;border-top:1px solid #eef0f2;font-size:11px;color:#7a8d99;line-height:1.6;}
 `;
 
-export default function Nav({ citySuffix, homeHref, onWordmark, actions = {}, labels = {} }) {
+export default function Nav({ citySuffix, homeHref, onWordmark, actions = {}, labels = {}, activeKey }) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -76,23 +79,23 @@ export default function Nav({ citySuffix, homeHref, onWordmark, actions = {}, la
   }, [open]);
 
   const L = {
-    checkRent: "Check Your Rent",
-    shareRent: "Share Your Rent",
-    forBusiness: "For Business",
-    rentMap: "Rent Map",
+    blog: "Blog",
+    cities: "Cities",
+    neighbourhoods: "Neighbourhoods",
+    submit: "Share my rent",
+    about: "About",
     langLabel: "Français",
     menu: "Menu",
     close: "Close",
-    allCities: "All cities",
+    primaryCta: "Share my rent",
     ...labels,
   };
 
   const home = homeHref || "/";
-  const onCity = !!citySuffix && home !== "/";
 
-  const fire = (fn) => () => {
+  const fire = (fn, name) => () => {
     setOpen(false);
-    try { window.frc?.track?.("nav_click", { item: fn?.name || "unknown" }); } catch {}
+    try { window.frc?.track?.("nav_click", { item: name }); } catch {}
     if (typeof fn === "function") fn();
   };
 
@@ -101,8 +104,15 @@ export default function Nav({ citySuffix, homeHref, onWordmark, actions = {}, la
       e.preventDefault();
       onWordmark();
     }
-    // else: fall through, native link to `home` does the work
   };
+
+  const navItems = [
+    { key: "blog",           label: L.blog,           fn: actions.onBlog },
+    { key: "cities",         label: L.cities,         fn: actions.onExploreCities },
+    { key: "neighbourhoods", label: L.neighbourhoods, fn: actions.onNeighbourhoods },
+    { key: "submit",         label: L.submit,         fn: actions.onSubmitRent },
+    { key: "about",          label: L.about,          fn: actions.onAbout },
+  ];
 
   return (
     <>
@@ -111,50 +121,57 @@ export default function Nav({ citySuffix, homeHref, onWordmark, actions = {}, la
         <div className="frc-nav-inner">
           <div className="frc-wordmark-wrap">
             <a href={home} onClick={wordmarkClick} className="frc-wordmark">
-              FairRent{citySuffix ? <span>/ {citySuffix}</span> : null}
+              FairRent{citySuffix ? <span className="frc-city">/ {citySuffix}</span> : null}
             </a>
-            {onCity && (
-              <a href={home} className="frc-back-link" aria-label={L.allCities}>← {L.allCities}</a>
-            )}
           </div>
-          <button className="frc-hamburger" onClick={() => setOpen(true)} aria-label={L.menu} aria-expanded={open}>
-            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <line x1="3" y1="6" x2="19" y2="6"/>
-              <line x1="3" y1="11" x2="19" y2="11"/>
-              <line x1="3" y1="16" x2="19" y2="16"/>
-            </svg>
-          </button>
+
+          <div className="frc-primary" role="menubar">
+            {navItems.map(item => (
+              <button
+                key={item.key}
+                role="menuitem"
+                className={"frc-primary-item" + (activeKey === item.key ? " is-active" : "")}
+                onClick={fire(item.fn, item.key)}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="frc-right">
+            <button className="frc-lang" onClick={fire(actions.onToggleLang, "lang")}>{L.langLabel}</button>
+            <button className="frc-cta" onClick={fire(actions.onSubmitRent, "header_cta")}>{L.primaryCta}</button>
+            <button className="frc-hamburger" onClick={() => setOpen(true)} aria-label={L.menu} aria-expanded={open}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <line x1="4" y1="7" x2="20" y2="7"/>
+                <line x1="4" y1="12" x2="20" y2="12"/>
+                <line x1="4" y1="17" x2="20" y2="17"/>
+              </svg>
+            </button>
+          </div>
         </div>
       </nav>
-      <div className="frc-subnav">
-        <div className="frc-subnav-inner">
-          <button className="frc-subnav-item" onClick={fire(actions.onRentMap)}>{L.rentMap}</button>
-          <button className="frc-subnav-item" onClick={fire(actions.onCheckRent)}>{L.checkRent}</button>
-          <button className="frc-subnav-item" onClick={fire(actions.onForBusiness)}>{L.forBusiness}</button>
-          <button className="frc-subnav-item frc-lang" onClick={fire(actions.onToggleLang)}>{L.langLabel}</button>
-          <button className="frc-subnav-item frc-share" onClick={fire(actions.onShareRent)}>{L.shareRent}</button>
-        </div>
-      </div>
 
       {/* Mobile drawer */}
       <div className={"frc-drawer-backdrop" + (open ? " open" : "")} onClick={() => setOpen(false)} aria-hidden="true"/>
       <aside className={"frc-drawer" + (open ? " open" : "")} role="dialog" aria-modal="true" aria-label={L.menu}>
         <div className="frc-drawer-head">
-          <span className="frc-drawer-head-title">FairRent{citySuffix ? <span> / {citySuffix}</span> : null}</span>
+          <span className="frc-drawer-head-title">FairRent{citySuffix ? <span className="frc-city">/ {citySuffix}</span> : null}</span>
           <button className="frc-drawer-close" onClick={() => setOpen(false)} aria-label={L.close}>&times;</button>
         </div>
         <div className="frc-drawer-body">
-          <button className="frc-drawer-link primary" onClick={fire(actions.onShareRent)}>{L.shareRent}</button>
-          <button className="frc-drawer-link" onClick={fire(actions.onCheckRent)}>{L.checkRent}</button>
-          <button className="frc-drawer-link" onClick={fire(actions.onRentMap)}>{L.rentMap}</button>
-          <button className="frc-drawer-link" onClick={fire(actions.onForBusiness)}>{L.forBusiness}</button>
-          <button className="frc-drawer-link" onClick={fire(actions.onToggleLang)}>{L.langLabel}</button>
-          {onCity && (
-            <a className="frc-drawer-link" href={home} style={{ display:"block", textDecoration:"none" }}>← {L.allCities}</a>
-          )}
+          <button className="frc-drawer-cta" onClick={fire(actions.onSubmitRent, "drawer_submit")}>{L.submit}</button>
+          <div className="frc-drawer-divider"/>
+          {navItems.map(item => (
+            <button key={item.key} className="frc-drawer-link" onClick={fire(item.fn, "drawer_" + item.key)}>
+              {item.label}
+            </button>
+          ))}
+          <div className="frc-drawer-divider"/>
+          <button className="frc-drawer-lang" onClick={fire(actions.onToggleLang, "drawer_lang")}>{L.langLabel}</button>
         </div>
         <div className="frc-drawer-foot">
-          Anonymous renter submissions. Public market data. Informational only.
+          Anonymous renter submissions. Privacy-first. Built by renters, for renters.
         </div>
       </aside>
     </>

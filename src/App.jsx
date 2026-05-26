@@ -1010,20 +1010,23 @@ export default function App() {
           homeHref="https://fairrent.ca"
           citySuffix={"Vancouver"}
           actions={{
-            onRentMap:     () => { window.location.href = "https://fairrent.ca/map"; },
-            onCheckRent:   () => { const el=document.getElementById("form"); if(el) el.scrollIntoView({behavior:"smooth",block:"start"}); else window.scrollTo({top:0,behavior:"smooth"}); },
-            onShareRent:   () => { const el=document.getElementById("form"); if(el) el.scrollIntoView({behavior:"smooth",block:"start"}); else window.scrollTo({top:0,behavior:"smooth"}); },
-            onForBusiness: () => { window.location.href = "https://fairrent.ca/intelligence"; },
-            onToggleLang:  toggleLang,
+            onBlog:           () => { window.location.href = "https://fairrent.ca/blog"; },
+            onExploreCities:  () => { window.location.href = "https://fairrent.ca/"; },
+            onNeighbourhoods: () => { window.location.href = "https://fairrent.ca/map"; },
+            onSubmitRent:     () => { const el=document.getElementById("form"); if(el) el.scrollIntoView({behavior:"smooth",block:"start"}); else window.scrollTo({top:0,behavior:"smooth"}); },
+            onAbout:          () => { window.location.href = "https://fairrent.ca/about"; },
+            onToggleLang:     toggleLang,
           }}
           labels={{
-            checkRent:   lang === "fr" ? "Vérifier mon loyer" : "Check Your Rent",
-            shareRent:   lang === "fr" ? "Partager mon loyer" : "Share Your Rent",
-            forBusiness: lang === "fr" ? "Entreprises"        : "For Business",
-            rentMap:     lang === "fr" ? "Carte des loyers"    : "Rent Map",
-            langLabel:   lang === "fr" ? "English"             : "Français",
-            menu:        lang === "fr" ? "Menu"                : "Menu",
-            close:       lang === "fr" ? "Fermer"              : "Close",
+            blog:           lang === "fr" ? "Blogue"             : "Blog",
+            cities:         lang === "fr" ? "Villes"             : "Cities",
+            neighbourhoods: lang === "fr" ? "Quartiers"          : "Neighbourhoods",
+            submit:         lang === "fr" ? "Partager mon loyer" : "Share my rent",
+            about:          lang === "fr" ? "À propos"           : "About",
+            primaryCta:     lang === "fr" ? "Partager mon loyer" : "Share my rent",
+            langLabel:      lang === "fr" ? "English"            : "Français",
+            menu:           lang === "fr" ? "Menu"               : "Menu",
+            close:          lang === "fr" ? "Fermer"             : "Close",
           }}
         />
 
@@ -1212,20 +1215,6 @@ export default function App() {
       <div className="mobile-sticky-cta">
         <a href="#top" onClick={e=>{e.preventDefault();const el=document.getElementById('form');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});else window.scrollTo({top:0,behavior:'smooth'});}}>Check my rent →</a>
               <Footer
-          actions={{
-            onMap:         () => { window.location.href = "https://fairrent.ca/map"; },
-            onForBusiness: () => { window.location.href = "https://fairrent.ca/intelligence"; },
-            onBlog:        () => { window.location.href = "https://fairrent.ca/blog"; },
-            onNewcomers:   () => { window.location.href = "https://fairrent.ca/newcomers"; },
-            onStudents:    () => { window.location.href = "https://fairrent.ca/students"; },
-            onMethodology: () => { window.location.href = "https://fairrent.ca/methodology"; },
-            onAbout:       () => { window.location.href = "https://fairrent.ca/about"; },
-            onFaq:         () => { window.location.href = "https://fairrent.ca/faq"; },
-            onPrivacy:     () => { window.location.href = "https://fairrent.ca/privacy"; },
-            onContact:     () => { window.location.href = "https://fairrent.ca/contact"; },
-            onTerms:       () => { window.location.href = "https://fairrent.ca/terms"; },
-            onToggleLang:  toggleLang,
-          }}
           compact={true}
           citySuffix={"Vancouver"}
         />
