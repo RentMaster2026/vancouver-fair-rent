@@ -391,11 +391,15 @@ const CSS = `
 
   .hood-section{margin-bottom:20px;}
   /* form-first: on mobile, drop the page heading and neighbourhood pills above the form so the calculator is the first thing the user sees on landing. The SEO H1 stays in the DOM. */
+  /* Mobile: keep visual flow sensible. Hero (order:0) → form (1) → sources (2).
+     Hood-section is hidden on mobile; the neighbourhood pills are accessible
+     via the new hero's Explore neighbourhoods button. */
   @media(max-width:760px){
     .page-wrap{display:flex;flex-direction:column;}
     .page-wrap > div[style*="border-bottom"]{display:none;}
     .page-grid{order:1;}
-    .hood-section{order:2;display:none;}
+    .sources{order:2;margin-top:28px;padding-top:18px;}
+    .hood-section{order:3;display:none;}
   }
   .hood-label{font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;}
   .hood-pills{display:flex;flex-wrap:wrap;gap:8px;}
@@ -1276,11 +1280,8 @@ export default function App() {
       </div>
       <div className="mobile-sticky-cta">
         <a href="#top" onClick={e=>{e.preventDefault();const el=document.getElementById('form');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});else window.scrollTo({top:0,behavior:'smooth'});}}>Check my rent →</a>
-              <Footer
-          compact={true}
-          citySuffix={"Vancouver"}
-        />
-</div>
+      </div>
+      <Footer compact={true} citySuffix={"Vancouver"} />
     </>
   );
 }
