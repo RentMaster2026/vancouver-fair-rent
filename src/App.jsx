@@ -372,17 +372,8 @@ const CSS = `
   input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
   a{color:inherit;}
 
-  .gov-nav{background:var(--nav-bg);border-bottom:3px solid var(--accent);}
-  .gov-nav-inner{max-width:1100px;margin:0 auto;padding:0 16px;height:48px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
-  .gov-wordmark{font-size:13px;font-weight:700;color:#fff;text-decoration:none;white-space:nowrap;flex-shrink:0;}
-  .gov-wordmark span{font-weight:400;color:#aab8c2;}
-  .gov-count{font-family:var(--mono);font-size:11px;color:#aab8c2;white-space:nowrap;}
-  .gov-subbar{background:var(--bar-bg);border-bottom:1px solid #3d5a6e;}
-  .gov-subbar-inner{max-width:1100px;margin:0 auto;padding:0 16px;min-height:36px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
-  @media(max-width:640px){.gov-subbar-inner{gap:8px 12px;padding:6px 12px;}.gov-subbar a{font-size:11.5px;}}
-  .gov-subbar-inner::-webkit-scrollbar{display:none;}
-  .gov-subbar a{font-size:12px;color:#aab8c2;text-decoration:none;white-space:nowrap;flex-shrink:0;}
-  .gov-subbar a:hover{color:#fff;text-decoration:underline;}
+  /* (Dead gov-style nav/subbar CSS removed — the shared Nav component
+     has its own scoped styles, so these selectors were never applied.) */
 
   .page-wrap{max-width:1100px;margin:0 auto;padding:24px 20px 60px;}
   .page-heading{margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border);}
@@ -570,7 +561,6 @@ const CSS = `
     .f-row{grid-template-columns:1fr;}
     .toggle-pair{grid-template-columns:1fr;}
     .share-row{grid-template-columns:1fr 1fr;}
-    .gov-count{display:none;}
     .score-number{font-size:40px;}
   }
 
@@ -853,14 +843,32 @@ export default function App() {
     try { localStorage.setItem('frc_lang', next); } catch {}
   }
 
-  const [hood,       setHood]       = useState("");
-  const [unitType,   setUnitType]   = useState("");
-  const [rent,       setRent]       = useState("");
-  const [moveInYear, setMoveInYear] = useState("");
-  const [sqft,       setSqft]       = useState("");
-  const [parking,    setParking]    = useState(false);
-  const [utilities,  setUtilities]  = useState(false);
+  // Form-state persistence: read any saved draft from sessionStorage so a
+  // user who navigated mid-form (e.g. to read methodology, then came back)
+  // doesn't lose their inputs. Saved per city.
+  const FORM_KEY = `frc_form_${CITY}`;
+  const savedDraft = (() => {
+    try { return JSON.parse(sessionStorage.getItem(FORM_KEY) || "{}"); } catch { return {}; }
+  })();
+
+  const [hood,       setHood]       = useState(savedDraft.hood       ?? "");
+  const [unitType,   setUnitType]   = useState(savedDraft.unitType   ?? "");
+  const [rent,       setRent]       = useState(savedDraft.rent       ?? "");
+  const [moveInYear, setMoveInYear] = useState(savedDraft.moveInYear ?? "");
+  const [sqft,       setSqft]       = useState(savedDraft.sqft       ?? "");
+  const [parking,    setParking]    = useState(savedDraft.parking    ?? false);
+  const [utilities,  setUtilities]  = useState(savedDraft.utilities  ?? false);
   const [errors,     setErrors]     = useState({});
+
+  // Persist on every change. sessionStorage means the draft is cleared
+  // when the tab closes — no long-term storage of unsubmitted forms.
+  useEffect(() => {
+    try {
+      sessionStorage.setItem(FORM_KEY, JSON.stringify({
+        hood, unitType, rent, moveInYear, sqft, parking, utilities,
+      }));
+    } catch {}
+  }, [FORM_KEY, hood, unitType, rent, moveInYear, sqft, parking, utilities]);
 
   const [result,      setResult]      = useState(null);
   const [submitting,  setSubmitting]  = useState(false);
@@ -989,6 +997,7 @@ export default function App() {
   function handleReset() {
     setResult(null); setHood(""); setUnitType(""); setRent(""); setMoveInYear(""); setSqft("");
     setParking(false); setUtilities(false); setErrors({}); setSaveWarning("");
+    try { sessionStorage.removeItem(FORM_KEY); } catch {}
     window.scrollTo(0,0);
   }
 
