@@ -74,6 +74,16 @@ const STRINGS = {
     pageTitle:`${CITY_NAME} Rent Calculator: Check If Your Rent Is Fair`,
     pageDesc:`Find out if your ${CITY_NAME} rent is fair. Compare what you pay to real market data from CMHC and local renter submissions. Free. Anonymous. No account required. BC rent control applies to all tenancies.`,
     browseByHood:"Browse by neighbourhood",
+    // Community hero (Glassdoor-style) — growing-market framing
+    heroEyebrow:`${CITY_NAME} rent transparency community`,
+    heroTitle:`See what ${CITY_NAME} renters are actually paying.`,
+    heroSubStrong:`${CITY_NAME} rents are difficult to compare.`,
+    heroSubRest:`Submit your rent anonymously to help build ${CITY_NAME}'s tenant-powered rent database.`,
+    heroCtaPrimary:`Share my ${CITY_NAME} rent`,
+    heroCtaSecondary:`Explore neighbourhoods`,
+    heroTickerPre:"Joined by",
+    heroTickerPost:`anonymous ${CITY_NAME} renters and growing.`,
+    heroLoading:"Loading community count.",
     formTitle:"Enter your rental details", formSub:"Anonymous. No signup. Takes about 60 seconds.",
     labelHood:"Neighbourhood", labelUnit:"Unit type", labelRent:"Monthly rent (CAD)", labelYear:"Year moved in", rentMicro:"What you actually pay each month, including any included parking or utilities.", yearMicro:"Used to compare against rents from the same year and apply rent control where it applies.",
     labelSqft:"Unit size in sq ft", sqftOptional:"optional",
@@ -138,6 +148,16 @@ const STRINGS = {
     pageTitle:"Calculateur de loyer à Vancouver : Votre loyer est-il juste ?",
     pageDesc:"Découvrez si votre loyer à Vancouver est juste. Comparez ce que vous payez aux données réelles de la SCHL et aux soumissions de locataires locaux. Gratuit. Anonyme. Sans inscription. Le contrôle des loyers de la C.-B. s'applique à tous les logements.",
     browseByHood:"Parcourir par quartier",
+    // Community hero
+    heroEyebrow:"Communauté de transparence des loyers à Vancouver",
+    heroTitle:"Voyez ce que paient vraiment les locataires de Vancouver.",
+    heroSubStrong:"Les loyers à Vancouver sont difficiles à comparer.",
+    heroSubRest:"Partagez votre loyer anonymement pour aider à bâtir la base de données des loyers de Vancouver.",
+    heroCtaPrimary:"Partager mon loyer à Vancouver",
+    heroCtaSecondary:"Explorer les quartiers",
+    heroTickerPre:"Rejoint par",
+    heroTickerPost:"locataires anonymes à Vancouver et en croissance.",
+    heroLoading:"Chargement.",
     formTitle:"Entrez vos informations de location", formSub:"Anonyme. Sans inscription. Environ 60 secondes.",
     labelHood:"Quartier", labelUnit:"Type de logement", labelRent:"Loyer mensuel (CAD)", labelYear:"Année d'emménagement",
     labelSqft:"Superficie du logement en pi²", sqftOptional:"facultatif",
@@ -330,15 +350,20 @@ function useCountUp(target, dur=800) {
 
 const CSS = `
   :root {
-    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-    --mono: "Courier New", Courier, monospace;
-    --bg:   #f5f5f5;
+    --serif: Charter, Georgia, "Iowan Old Style", "Times New Roman", serif;
+    --sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono: "SF Mono", Menlo, Consolas, "Courier New", monospace;
+    --bg:   #f4f5f7;
     --white:#ffffff;
-    --border:#cccccc;
-    --border-dark:#999999;
-    --t1:#111111; --t2:#444444; --t3:#767676;
+    --surface:#ffffff;
+    --border:#e3e6ea;
+    --border-dark:#cdd2d8;
+    --border-soft:#eef0f3;
+    --t1:#0d1418; --t2:#3b4753; --t3:#6a7682; --t4:#9aa4af;
     --accent:${ACCENT}; --accent-bg:${ACCENT_BG};
-    --nav-bg:#1c2b36; --bar-bg:#2f4553;
+    --accent-hover:#0a6630;
+    --accent-soft:#eef7f1;
+    --accent-line:#cfe6d8;
   }
   html,body,#root{margin:0;padding:0;width:100%;background:var(--bg);}
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -372,17 +397,38 @@ const CSS = `
     .page-grid{order:1;}
     .hood-section{order:2;display:none;}
   }
-  .hood-label{font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;}
-  .hood-pills{display:flex;flex-wrap:wrap;gap:6px;}
-  .hood-pill{padding:4px 10px;border:1px solid var(--border-dark);background:var(--white);font-size:12px;color:var(--t2);cursor:pointer;}
-  .hood-pill:hover{background:var(--accent-bg);border-color:var(--accent);color:var(--accent);}
+  .hood-label{font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;}
+  .hood-pills{display:flex;flex-wrap:wrap;gap:8px;}
+  .hood-pill{padding:6px 12px;border:1px solid var(--border);background:var(--white);font-size:13px;font-weight:500;color:var(--t2);cursor:pointer;border-radius:999px;text-decoration:none;}
+  .hood-pill:hover{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);}
+
+  /* City community hero (Glassdoor-style) */
+  .city-hero{margin-bottom:24px;padding:8px 0 22px;border-bottom:1px solid var(--border-soft);}
+  .city-hero-eyebrow{font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.14em;margin-bottom:10px;}
+  .city-hero h1{font-family:var(--serif);font-size:clamp(26px,3.4vw,40px);font-weight:700;color:var(--t1);line-height:1.12;letter-spacing:-0.01em;margin-bottom:12px;max-width:760px;}
+  .city-hero-sub{font-size:15px;color:var(--t2);line-height:1.6;max-width:620px;margin-bottom:16px;}
+  .city-hero-sub strong{color:var(--t1);font-weight:600;}
+  .city-hero-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px;}
+  .city-hero-btn{display:inline-flex;align-items:center;justify-content:center;padding:11px 18px;font-size:14px;font-weight:600;border-radius:6px;border:1px solid transparent;font-family:inherit;cursor:pointer;text-decoration:none;line-height:1.2;}
+  .city-hero-btn-primary{background:var(--accent);color:#fff;border-color:var(--accent);}
+  .city-hero-btn-primary:hover{background:var(--accent-hover);border-color:var(--accent-hover);color:#fff;text-decoration:none;}
+  .city-hero-btn-ghost{background:transparent;color:var(--t2);border-color:var(--border);}
+  .city-hero-btn-ghost:hover{border-color:var(--t3);color:var(--t1);text-decoration:none;}
+  .city-hero-ticker{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;font-size:13px;color:var(--t3);margin-top:4px;}
+  .city-hero-ticker-num{font-weight:700;color:var(--t1);font-variant-numeric:tabular-nums;}
+  @media(max-width:640px){
+    .city-hero{padding:4px 0 16px;margin-bottom:16px;}
+    .city-hero h1{font-size:26px;}
+    .city-hero-sub{font-size:14px;}
+    .city-hero-actions .city-hero-btn{flex:1 1 100%;}
+  }
 
   .page-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,0.95fr);gap:20px;align-items:start;}
   .left-col{display:flex;flex-direction:column;gap:16px;}
   .right-col{position:sticky;top:90px;}
 
-  .form-panel{background:var(--white);border:1px solid var(--border);border-top:3px solid var(--accent);}
-  .form-panel-header{padding:12px 16px 10px;border-bottom:1px solid var(--border);background:#fafafa;}
+  .form-panel{background:var(--white);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+  .form-panel-header{padding:14px 18px 12px;border-bottom:1px solid var(--border-soft);background:#fbfcfd;}
   .form-panel-title{font-size:14px;font-weight:700;color:var(--t1);}
   .form-panel-sub{font-size:11px;color:var(--t3);margin-top:2px;}
   .form-body{padding:14px;display:flex;flex-direction:column;gap:13px;}
@@ -409,14 +455,14 @@ const CSS = `
   .btn-submit:disabled{background:#888;cursor:not-allowed;}
   .btn-anon{text-align:center;font-size:11px;color:var(--t3);margin-top:6px;}
 
-  .snapshot{background:var(--white);border:1px solid var(--border);}
-  .snapshot-header{padding:9px 14px;background:#fafafa;border-bottom:1px solid var(--border);font-size:12px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:0.05em;}
+  .snapshot{background:var(--white);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+  .snapshot-header{padding:11px 16px;background:#fbfcfd;border-bottom:1px solid var(--border-soft);font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:0.08em;}
   .snapshot-row{display:flex;justify-content:space-between;align-items:baseline;padding:7px 14px;border-bottom:1px solid #ebebeb;gap:12px;}
   .snapshot-row:last-child{border-bottom:none;}
   .snapshot-key{font-size:13px;color:var(--t2);flex:1;min-width:0;}
   .snapshot-val{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--t1);flex-shrink:0;}
 
-  .result-panel{background:var(--white);border:1px solid var(--border);}
+  .result-panel{background:var(--white);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
   .result-placeholder{padding:28px 16px;text-align:center;}
   .result-placeholder-icon{width:44px;height:44px;border:2px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;}
   .result-placeholder p{font-size:13px;color:var(--t3);line-height:1.6;max-width:240px;margin:0 auto 16px;}
@@ -1032,14 +1078,30 @@ export default function App() {
 
         <div className="page-wrap">
 
-          <div style={{ marginBottom:20, paddingBottom:16, borderBottom:"1px solid var(--border)" }}>
-            <h1 style={{ fontSize:"clamp(18px,3vw,24px)", fontWeight:700, color:"var(--t1)", marginBottom:4, lineHeight:1.2 }}>
-              {t('pageTitle')}
-            </h1>
-            <p style={{ fontSize:13, color:"var(--t2)", lineHeight:1.5 }}>
-              {t('pageDesc')}
-            </p>
-          </div>
+          {/* Community hero — Vancouver-focused Glassdoor framing.
+              SEO H1 is still the pageTitle string but rendered as a screen-reader-only
+              span so the new editorial headline can lead visually. */}
+          <section className="city-hero">
+            <h1 style={{position:"absolute",width:1,height:1,padding:0,margin:-1,overflow:"hidden",clip:"rect(0,0,0,0)",whiteSpace:"nowrap",border:0}}>{t('pageTitle')}</h1>
+            <div className="city-hero-eyebrow">{t('heroEyebrow')}</div>
+            <div style={{fontFamily:"var(--serif)",fontSize:"clamp(26px,3.4vw,40px)",fontWeight:700,color:"var(--t1)",lineHeight:1.12,letterSpacing:"-0.01em",marginBottom:12,maxWidth:760}}>{t('heroTitle')}</div>
+            <p className="city-hero-sub"><strong>{t('heroSubStrong')}</strong> {t('heroSubRest')}</p>
+            <div className="city-hero-actions">
+              <button className="city-hero-btn city-hero-btn-primary" onClick={()=>{const el=document.getElementById("form"); if(el) el.scrollIntoView({behavior:"smooth",block:"start"}); window.frc?.track?.('city_hero_primary_click',{city:CITY});}}>{t('heroCtaPrimary')}</button>
+              <a className="city-hero-btn city-hero-btn-ghost" href="https://fairrent.ca/map" onClick={()=>window.frc?.track?.('city_hero_explore_click',{city:CITY})}>{t('heroCtaSecondary')}</a>
+            </div>
+            <div className="city-hero-ticker" aria-live="polite">
+              {countLoaded ? (
+                <>
+                  <span>{t('heroTickerPre')}</span>
+                  <span className="city-hero-ticker-num">{displayCount.toLocaleString(lang === "fr" ? "fr-CA" : "en-CA")}</span>
+                  <span>{t('heroTickerPost')}</span>
+                </>
+              ) : (
+                <span>{t('heroLoading')}</span>
+              )}
+            </div>
+          </section>
 
           {/* Neighbourhood browse */}
           <div className="hood-section">
