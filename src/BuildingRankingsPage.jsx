@@ -771,7 +771,7 @@ export default function BuildingRankingsPage({
           {/* Internal links */}
           <section className="br-section">
             <div className="br-sh">More from FairRent Canada</div>
-            <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))", gap:10, marginTop:10 }}>
+            <div style={{ display:"flex", flexWrap:"wrap", gap:8, marginTop:10 }}>
               {[
                 { label: "Check if your rent is fair", href: "#", fn: onBack },
                 { label: "Browse Vancouver neighbourhoods", href: "https://fairrent.ca/map?city=vancouver" },
@@ -782,9 +782,9 @@ export default function BuildingRankingsPage({
                   key={l.label}
                   href={l.href}
                   onClick={l.fn ? e => { e.preventDefault(); l.fn(); } : undefined}
-                  style={{ display:"block", padding:"12px 16px", background:"var(--surface)", border:"1px solid var(--border)", borderRadius:6, fontSize:14, fontWeight:600, color:"var(--t1)", textDecoration:"none" }}
-                  onMouseOver={e => { e.currentTarget.style.background = "var(--accent-soft)"; e.currentTarget.style.color = "var(--accent)"; }}
-                  onMouseOut={e => { e.currentTarget.style.background = "var(--surface)"; e.currentTarget.style.color = "var(--t1)"; }}
+                  style={{ display:"inline-block", padding:"8px 14px", background:"var(--surface)", border:"1px solid var(--border)", borderRadius:4, fontSize:13, fontWeight:600, color:"var(--t1)", textDecoration:"none", lineHeight:1.4 }}
+                  onMouseOver={e => { e.currentTarget.style.background = "var(--accent)"; e.currentTarget.style.color = "#fff"; e.currentTarget.style.borderColor = "var(--accent)"; }}
+                  onMouseOut={e => { e.currentTarget.style.background = "var(--surface)"; e.currentTarget.style.color = "var(--t1)"; e.currentTarget.style.borderColor = "var(--border)"; }}
                 >
                   {l.label}
                 </a>
