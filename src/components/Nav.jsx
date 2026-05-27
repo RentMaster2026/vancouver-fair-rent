@@ -19,7 +19,9 @@ const CSS = `
   .frc-nav-inner{max-width:1180px;margin:0 auto;padding:0 20px;height:60px;display:flex;align-items:center;justify-content:space-between;gap:24px;}
   .frc-wordmark-wrap{display:flex;align-items:baseline;gap:8px;min-width:0;}
   .frc-wordmark{font-size:18px;font-weight:700;color:#0e7c3a;text-decoration:none;white-space:nowrap;letter-spacing:-0.01em;}
-  .frc-wordmark .frc-city{font-size:14px;font-weight:500;color:#5b6770;margin-left:6px;}
+  .frc-wordmark:hover{text-decoration:underline;}
+  .frc-city{font-size:14px;font-weight:500;color:#5b6770;margin-left:6px;text-decoration:none;white-space:nowrap;}
+  .frc-city:hover{text-decoration:underline;color:#0e7c3a;}
 
   .frc-primary{display:flex;align-items:center;gap:4px;}
   .frc-primary-item{background:none;border:none;color:#1d2a35;font-size:14px;font-weight:500;cursor:pointer;padding:8px 14px;border-radius:6px;font-family:inherit;letter-spacing:0;line-height:1;text-decoration:none;display:inline-flex;align-items:center;}
@@ -135,9 +137,8 @@ export default function Nav({ citySuffix, homeHref, onWordmark, actions = {}, la
       <nav className="frc-nav" aria-label="Primary">
         <div className="frc-nav-inner">
           <div className="frc-wordmark-wrap">
-            <a href={home} onClick={wordmarkClick} className="frc-wordmark">
-              FairRent{citySuffix ? <span className="frc-city">/ {citySuffix}</span> : null}
-            </a>
+            <a href={home} onClick={wordmarkClick} className="frc-wordmark">FairRent</a>
+            {citySuffix ? <a href="/" className="frc-city">/ {citySuffix}</a> : null}
           </div>
 
           <div className="frc-primary" role="menubar">
