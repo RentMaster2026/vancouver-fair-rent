@@ -21,6 +21,7 @@ import {
   searchBuildings,
   VANCOUVER_NEIGHBOURHOODS,
 } from "./buildingData";
+import { lookupBuildingEstimate, getEstimateRatingTier } from "./buildingEstimates";
 
 // Building-side neighbourhood keys that map to a given VANCOUVER_HOODS key.
 // E.g. hoodKey "centretown" includes building-side hoods centretown,
@@ -231,7 +232,7 @@ function ScoreMethodology() {
 
 // ─── Building card ────────────────────────────────────────────────────────────
 
-function BuildingCard({ building, score, hoodName, showHoodTag, onSubmit }) {
+function BuildingCard({ building, score, estimate, hoodName, showHoodTag, onSubmit }) {
   const hasScore = score !== null && score !== undefined;
   const n = score?.submissions ?? 0;
   const conf = getBuildingConfidence(n);
@@ -241,6 +242,10 @@ function BuildingCard({ building, score, hoodName, showHoodTag, onSubmit }) {
     const sl = getBuildingScoreLabel(score.total);
     scoreBadge = { ...sl, value: score.total };
   }
+
+  // No real submissions yet: fall back to the seed estimate when we have one.
+  // Always labelled "Estimated" + "Low confidence" per the public-wording spec.
+  const estTier = (!scoreBadge && estimate) ? getEstimateRatingTier(estimate.score) : null;
 
   const amenityIcons = {
     elevator: "Elevator", gym: "Gym", pool: "Pool", concierge: "Concierge",
@@ -267,6 +272,16 @@ function BuildingCard({ building, score, hoodName, showHoodTag, onSubmit }) {
               </div>
               <div className="bcard-score-label" style={{ background: scoreBadge.bg, color: scoreBadge.color, border: `1px solid ${scoreBadge.border}` }}>
                 {scoreBadge.label}
+              </div>
+            </>
+          ) : estTier ? (
+            <>
+              <div>
+                <span className="bcard-score-num" style={{ color: estTier.color }}>{estimate.score}</span>
+                <span className="bcard-score-of"> /100</span>
+              </div>
+              <div className="bcard-score-label" style={{ background: estTier.bg, color: estTier.color, border: `1px solid ${estTier.border}` }}>
+                Estimated
               </div>
             </>
           ) : (
@@ -312,6 +327,12 @@ function BuildingCard({ building, score, hoodName, showHoodTag, onSubmit }) {
               {score.rentRatio <= 0.95 ? "below or near" : score.rentRatio <= 1.10 ? "around" : "above"}{" "}
               the typical range for comparable rentals in {hoodName || "this area"}. The score is{" "}
               {conf.label.toLowerCase()} and may change as more renters submit data.
+            </>
+          ) : estTier ? (
+            <>
+              <strong>Estimated FairRent score · {estimate.confidence === "Very Low" ? "Very low" : estimate.confidence} confidence.</strong>{" "}
+              Based on available market signals like neighbourhood, building type, and nearby rent pressure.
+              Needs more renter submissions before we publish a verified score. Submit your rent anonymously to help.
             </>
           ) : (
             <>
@@ -651,11 +672,13 @@ export default function BuildingRankingsPage({
                           score = { submissions: subs.length, avgRent, bench, rentRatio: avgRent / bench };
                         }
                       }
+                      const estimate = lookupBuildingEstimate(b);
                       return (
                         <BuildingCard
                           key={b.id}
                           building={b}
                           score={score}
+                          estimate={estimate}
                           hoodName={hoodName}
                           showHoodTag={!isHoodPage}
                           onSubmit={handleSubmitCta}

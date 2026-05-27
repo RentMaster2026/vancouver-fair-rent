@@ -3,8 +3,9 @@ import { createClient } from "@supabase/supabase-js";
 import NeighbourhoodPage from "./NeighbourhoodPage";
 import BuildingRankingsPage from "./BuildingRankingsPage";
 import { VANCOUVER_HOODS, VANCOUVER_CITY } from "./hoodData";
-import { VANCOUVER_BUILDINGS, HOOD_NAME_TO_KEY, resolveBuildingName } from "./buildingData";
+import { VANCOUVER_BUILDINGS, HOOD_NAME_TO_KEY, resolveBuildingName, getBuildingById } from "./buildingData";
 import BuildingAutocomplete from "./BuildingAutocomplete";
+import { lookupBuildingEstimate, getEstimateRatingTier } from "./buildingEstimates";
 import Nav from "./components/Nav";
 import Footer from "./components/Footer";
 
@@ -484,6 +485,22 @@ const CSS = `
   .result-header-meta{font-size:11px;color:var(--t3);margin-top:2px;}
   .result-verdict-badge{font-size:11px;font-weight:700;padding:3px 8px;letter-spacing:0.04em;white-space:nowrap;}
   .result-body{padding:14px;display:flex;flex-direction:column;gap:14px;}
+
+  /* Building estimate card (seed-data only — always 'Low confidence') */
+  .bldg-est-card{border:1px solid var(--border);border-radius:8px;background:#fafbfc;padding:14px 16px;display:flex;flex-direction:column;gap:10px;}
+  .bldg-est-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+  .bldg-est-eyebrow{font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:3px;}
+  .bldg-est-name{font-size:14px;font-weight:700;color:var(--t1);line-height:1.3;}
+  .bldg-est-score-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;}
+  .bldg-est-score{font-family:var(--mono);font-size:26px;font-weight:700;line-height:1;}
+  .bldg-est-of{font-family:var(--mono);font-size:12px;font-weight:400;color:var(--t3);}
+  .bldg-est-tier{font-size:10px;font-weight:700;padding:2px 8px;border-radius:3px;white-space:nowrap;}
+  .bldg-est-conf{font-size:12px;color:var(--t3);display:flex;align-items:center;gap:6px;}
+  .bldg-est-dot{width:6px;height:6px;border-radius:50%;background:#9aa4af;display:inline-block;}
+  .bldg-est-copy{font-size:13px;color:var(--t2);line-height:1.55;margin:0;}
+  .bldg-est-cta{display:inline-flex;align-items:center;font-size:13px;font-weight:600;color:#fff;background:var(--accent);border:1px solid var(--accent);padding:8px 14px;border-radius:4px;cursor:pointer;text-decoration:none;align-self:flex-start;}
+  .bldg-est-cta:hover{background:var(--accent-hover);text-decoration:none;}
+
   .range-bar-track{height:8px;background:#e0e0e0;position:relative;}
   .range-bar-fill{position:absolute;top:0;height:100%;}
   .range-bar-tick{position:absolute;top:50%;transform:translate(-50%,-50%);width:2px;height:14px;border-radius:1px;}
@@ -583,7 +600,47 @@ const CSS = `
 
 // ─── Result Panel ─────────────────────────────────────────────────────────────
 
-function ResultPanel({ result, hood, unitType, onReset, t }) {
+// Building estimate card — shown beneath the rent result when the renter
+// selected a known building. Always labels the score as an estimate,
+// always shows low confidence, always points to the submission CTA.
+function BuildingEstimateCard({ building }) {
+  if (!building || building.mode !== "select") return null;
+  const b = getBuildingById(building.id);
+  if (!b) return null;
+  const est = lookupBuildingEstimate(b);
+  if (!est) return null;
+  const tier = getEstimateRatingTier(est.score);
+  return (
+    <div className="bldg-est-card" role="region" aria-label="Building estimate">
+      <div className="bldg-est-head">
+        <div>
+          <div className="bldg-est-eyebrow">Building estimate</div>
+          <div className="bldg-est-name">{b.name}{b.address ? ` · ${b.address}` : ""}</div>
+        </div>
+        <div className="bldg-est-score-wrap">
+          <div>
+            <span className="bldg-est-score" style={{ color: tier.color }}>{est.score}</span>
+            <span className="bldg-est-of"> /100</span>
+          </div>
+          <div className="bldg-est-tier" style={{ background: tier.bg, color: tier.color, border: `1px solid ${tier.border}` }}>
+            {tier.label}
+          </div>
+        </div>
+      </div>
+      <div className="bldg-est-conf">
+        <span className="bldg-est-dot" /> {est.confidence === "Very Low" ? "Very low" : est.confidence} confidence · Based on available market signals
+      </div>
+      <p className="bldg-est-copy">
+        This is an early estimate based on available market signals. It will become more accurate as renters submit anonymous rent data for this building. Needs more renter submissions before we publish a verified score.
+      </p>
+      <a className="bldg-est-cta" href="#form" onClick={e => { e.preventDefault(); const el = document.getElementById("form"); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); }}>
+        Help improve this building score
+      </a>
+    </div>
+  );
+}
+
+function ResultPanel({ result, hood, unitType, onReset, t, building }) {
   const [shareOpen, setShareOpen] = useState(false);
   const [copied,    setCopied]    = useState(false);
   const [showBreakdown, setShowBreakdown] = useState(false);
@@ -677,6 +734,8 @@ function ResultPanel({ result, hood, unitType, onReset, t }) {
       </div>
 
       <div className="result-body">
+        <BuildingEstimateCard building={building} />
+
         {/* Price per sq ft */}
         {score.userPsf && (
           <div className="psf-section">
@@ -1320,7 +1379,7 @@ export default function App() {
             {/* RIGHT: Result */}
             <div className="right-col" id="result" style={{scrollMarginTop:80}}>
               {result ? (
-                <ResultPanel result={result} hood={hood} unitType={unitType} onReset={handleReset} t={t}/>
+                <ResultPanel result={result} hood={hood} unitType={unitType} onReset={handleReset} t={t} building={building}/>
               ) : (
                 <div className="result-panel">
                   <div className="result-placeholder">
