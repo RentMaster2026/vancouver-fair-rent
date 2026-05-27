@@ -3,7 +3,8 @@ import { createClient } from "@supabase/supabase-js";
 import NeighbourhoodPage from "./NeighbourhoodPage";
 import BuildingRankingsPage from "./BuildingRankingsPage";
 import { VANCOUVER_HOODS, VANCOUVER_CITY } from "./hoodData";
-import { VANCOUVER_BUILDINGS, getBuildingsForHoodName, resolveBuildingName } from "./buildingData";
+import { VANCOUVER_BUILDINGS, HOOD_NAME_TO_KEY, resolveBuildingName } from "./buildingData";
+import BuildingAutocomplete from "./BuildingAutocomplete";
 import Nav from "./components/Nav";
 import Footer from "./components/Footer";
 
@@ -397,9 +398,9 @@ const CSS = `
     .hood-section{order:3;display:none;}
   }
   .hood-label{font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;}
-  .hood-pills{display:flex;flex-wrap:wrap;gap:8px;}
-  .hood-pill{padding:6px 12px;border:1px solid var(--border);background:var(--white);font-size:13px;font-weight:500;color:var(--t2);cursor:pointer;border-radius:999px;text-decoration:none;}
-  .hood-pill:hover{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);}
+  .hood-pills{display:flex;flex-wrap:wrap;gap:6px;}
+  .hood-pill{padding:7px 13px;border:1px solid var(--border);background:var(--white);font-size:13px;font-weight:500;color:var(--t2);cursor:pointer;border-radius:4px;text-decoration:none;line-height:1.2;}
+  .hood-pill:hover{background:var(--accent);border-color:var(--accent);color:#fff;}
 
   /* City community hero (Glassdoor-style) */
   .city-hero{margin-bottom:24px;padding:8px 0 22px;border-bottom:1px solid var(--border-soft);}
@@ -868,9 +869,9 @@ export default function App() {
   const [parking,    setParking]    = useState(savedDraft.parking    ?? false);
   const [utilities,  setUtilities]  = useState(savedDraft.utilities  ?? false);
   const [errors,     setErrors]     = useState({});
-  // Building field — declared here so the sessionStorage useEffect below can reference them
-  const [buildingMode, setBuildingMode] = useState(savedDraft.buildingMode ?? "");
-  const [buildingText, setBuildingText] = useState(savedDraft.buildingText ?? "");
+  // Building field — declared here so the sessionStorage useEffect below can reference it.
+  // Shape: { mode: "" | "select" | "other" | "skip", id: string, text: string }
+  const [building, setBuilding] = useState(savedDraft.building ?? { mode: "", id: "", text: "" });
 
   // Persist on every change. sessionStorage means the draft is cleared
   // when the tab closes — no long-term storage of unsubmitted forms.
@@ -878,10 +879,10 @@ export default function App() {
     try {
       sessionStorage.setItem(FORM_KEY, JSON.stringify({
         hood, unitType, rent, moveInYear, sqft, parking, utilities,
-        buildingMode, buildingText,
+        building,
       }));
     } catch {}
-  }, [FORM_KEY, hood, unitType, rent, moveInYear, sqft, parking, utilities, buildingMode, buildingText]);
+  }, [FORM_KEY, hood, unitType, rent, moveInYear, sqft, parking, utilities, building]);
 
   const [result,      setResult]      = useState(null);
   const [submitting,  setSubmitting]  = useState(false);
@@ -1011,7 +1012,7 @@ export default function App() {
     try {
       const last=Number(localStorage.getItem(COOLDOWN_KEY)??0);
       if(Date.now()-last>=COOLDOWN_MS){
-        const finalBuilding = resolveBuildingName(buildingMode, buildingText);
+        const finalBuilding = resolveBuildingName(building.mode, building.id, building.text);
         const insertData = {
           neighborhood:hood,unit_type:unitType,monthly_rent:rentNum,
           move_in_year:yr,includes_parking:parking,includes_utilities:utilities,city:CITY,
@@ -1030,7 +1031,7 @@ export default function App() {
   function handleReset() {
     setResult(null); setHood(""); setUnitType(""); setRent(""); setMoveInYear(""); setSqft("");
     setParking(false); setUtilities(false); setErrors({}); setSaveWarning("");
-    setBuildingMode(""); setBuildingText("");
+    setBuilding({ mode: "", id: "", text: "" });
     try { sessionStorage.removeItem(FORM_KEY); } catch {}
     window.scrollTo(0,0);
   }
@@ -1265,32 +1266,17 @@ export default function App() {
                     <div className="field-note" style={{ marginBottom:8 }}>
                       This helps us compare rent inside specific buildings. You can leave it blank if you prefer.
                     </div>
-                    <select
-                      className="f-select"
-                      value={buildingMode}
-                      onChange={e => { setBuildingMode(e.target.value); if (e.target.value !== 'other') setBuildingText(''); }}
-                    >
-                      <option value="">Search existing building...</option>
-                      {getBuildingsForHoodName(hood).map(b => (
-                        <option key={b.id} value={b.id}>{b.name} - {b.address}</option>
-                      ))}
-                      <option value="other">Other building</option>
-                      <option value="skip">I prefer not to say</option>
-                    </select>
-                    {buildingMode === 'other' && (
-                      <input
-                        className="f-input"
-                        type="text"
-                        placeholder="Enter building name or address"
-                        value={buildingText}
-                        onChange={e => setBuildingText(e.target.value)}
-                        maxLength={200}
-                        style={{ marginTop:8 }}
-                      />
-                    )}
+                    <BuildingAutocomplete
+                      value={building}
+                      onChange={setBuilding}
+                      neighbourhoodKey={HOOD_NAME_TO_KEY[hood] || null}
+                      placeholder={hood
+                        ? `Search ${hood} buildings or any Metro Vancouver address`
+                        : "Search building name or address"}
+                    />
                     <div className="field-note" style={{ marginTop:6 }}>
-                      Your submission helps other renters compare prices in this building.
-                      We never show personal details. Building averages are only published once enough renters have submitted.
+                      Search by name, address, or neighbourhood. Spelling variations are matched
+                      automatically. Building averages are only published once enough renters have submitted.
                     </div>
                   </div>
 
@@ -1369,7 +1355,7 @@ export default function App() {
       <div className="mobile-sticky-cta">
         <a href="#top" onClick={e=>{e.preventDefault();const el=document.getElementById('form');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});else window.scrollTo({top:0,behavior:'smooth'});}}>Check my rent →</a>
       </div>
-      <Footer compact={true} citySuffix={"Vancouver"} />
+      <Footer compact={false} citySuffix={"Vancouver"} />
     </>
   );
 }

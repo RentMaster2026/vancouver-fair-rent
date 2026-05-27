@@ -566,7 +566,7 @@ export default function NeighbourhoodPage({ hood, city, onBack, onBuildingRankin
           </p>
         </div>
 
-        <Footer compact={true} citySuffix={city.name} />
+        <Footer compact={false} citySuffix={city.name} />
       </div>
     </>
   );

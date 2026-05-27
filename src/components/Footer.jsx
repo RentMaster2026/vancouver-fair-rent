@@ -14,8 +14,6 @@ const CSS = `
   .frc-footer-brand{font-size:18px;font-weight:700;color:#0e7c3a;text-decoration:none;display:inline-block;}
   .frc-footer-brand:hover{color:#0a6630;}
   .frc-footer-tag{font-size:13px;color:#5b6770;line-height:1.6;max-width:340px;}
-  .frc-footer-priv{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:#5b6770;background:#f4f6f8;padding:4px 10px;border-radius:999px;width:fit-content;margin-top:4px;}
-  .frc-footer-priv::before{content:"";width:6px;height:6px;border-radius:50%;background:#0e7c3a;display:inline-block;}
 
   .frc-footer-col{display:flex;flex-direction:column;gap:8px;}
   .frc-footer-h{font-size:12px;font-weight:700;color:#1d2a35;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;}
@@ -143,7 +141,6 @@ export default function Footer({ actions = {}, citySuffix, compact = false }) {
               <div className="frc-footer-tag">
                 A tenant-powered rent transparency platform. See what Canadian renters are actually paying. Free, anonymous, no sign-up.
               </div>
-              <span className="frc-footer-priv">Privacy-first · 100% anonymous</span>
             </div>
 
             <div className="frc-footer-col">

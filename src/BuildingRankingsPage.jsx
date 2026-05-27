@@ -18,7 +18,18 @@ import {
   getBuildingScoreLabel,
   getBuildingConfidence,
   calcBuildingScore,
+  searchBuildings,
+  VANCOUVER_NEIGHBOURHOODS,
 } from "./buildingData";
+
+// Building-side neighbourhood keys that map to a given VANCOUVER_HOODS key.
+// E.g. hoodKey "centretown" includes building-side hoods centretown,
+// downtown, golden-triangle, little-italy, dows-lake.
+function buildingHoodsFor(hoodKey) {
+  return Object.entries(VANCOUVER_NEIGHBOURHOODS)
+    .filter(([, v]) => v.hoodKey === hoodKey)
+    .map(([k]) => k);
+}
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -60,7 +71,7 @@ const CSS = `
 
   /* Hero */
   .br-hero{padding-bottom:28px;margin-bottom:28px;border-bottom:1px solid var(--border-soft);}
-  .br-eyebrow{font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.14em;margin-bottom:10px;}
+  .br-eyebrow{font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.14em;margin-bottom:10px;}
   .br-h1{font-family:var(--serif);font-size:clamp(26px,3.4vw,40px);font-weight:700;color:var(--t1);line-height:1.12;letter-spacing:-0.01em;margin-bottom:12px;max-width:800px;}
   .br-sub{font-size:15px;color:var(--t2);line-height:1.65;max-width:680px;margin-bottom:18px;}
   .br-cta-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px;}
@@ -74,7 +85,7 @@ const CSS = `
 
   /* Section headings */
   .br-section{margin-top:40px;}
-  .br-sh{font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.14em;margin-bottom:8px;}
+  .br-sh{font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.14em;margin-bottom:8px;}
   .br-h2{font-family:var(--serif);font-size:clamp(20px,2.4vw,27px);font-weight:700;color:var(--t1);letter-spacing:-0.005em;line-height:1.25;margin-bottom:10px;}
   .br-body{font-size:15px;color:var(--t2);line-height:1.7;max-width:720px;}
   .br-body p+p{margin-top:10px;}
@@ -90,15 +101,23 @@ const CSS = `
   .meth-text{font-size:13.5px;color:var(--t2);line-height:1.55;}
   .meth-text strong{color:var(--t1);}
 
+  /* Building search bar */
+  .bsearch-wrap{margin-top:16px;}
+  .bsearch-input{width:100%;padding:14px 16px;border:1px solid var(--border);background:#fff;font-size:16px;color:var(--t1);font-family:inherit;}
+  .bsearch-input:focus{outline:2px solid var(--accent);outline-offset:-1px;border-color:var(--accent);}
+  .bsearch-input::placeholder{color:var(--t4);}
+  .bsearch-hint{margin-top:8px;font-size:12.5px;color:var(--t3);}
+
   /* Building cards grid */
   .buildings-grid{display:flex;flex-direction:column;gap:14px;margin-top:16px;}
+  .results-meta{margin-top:14px;margin-bottom:6px;font-size:12.5px;color:var(--t3);}
 
   /* Building card */
   .bcard{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
   .bcard-head{padding:14px 16px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--border-soft);}
   .bcard-name{font-size:15px;font-weight:700;color:var(--t1);line-height:1.3;}
   .bcard-addr{font-size:12px;color:var(--t3);margin-top:2px;}
-  .bcard-hood-tag{font-size:11px;font-weight:600;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:999px;white-space:nowrap;margin-top:4px;display:inline-block;}
+  .bcard-hood-tag{font-size:11px;font-weight:600;color:var(--t2);background:#f4f6f8;padding:3px 9px;border:1px solid var(--border);border-radius:3px;white-space:nowrap;margin-top:4px;display:inline-block;}
   .bcard-score-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;}
   .bcard-score-num{font-family:var(--mono);font-size:28px;font-weight:700;line-height:1;}
   .bcard-score-of{font-family:var(--mono);font-size:12px;font-weight:400;color:var(--t3);}
@@ -178,11 +197,11 @@ function ScoreMethodology() {
   const [open, setOpen] = useState(false);
   const cats = [
     { pts: "35 pts", label: "Rent fairness", desc: "Compares the building's average rent to similar units in the same neighbourhood, adjusting for bedrooms, unit type, amenities, and building type. A building that prices fairly for its category scores well here, whether it is affordable or upscale." },
-    { pts: "15 pts", label: "Value for location", desc: "Looks at whether the rent makes sense for where the building sits. Factors include SkyTrain and bus access, walkability, distance to downtown, and local demand." },
-    { pts: "15 pts", label: "Building features", desc: "Scores the amenities Vancouver renters actually care about: in-unit laundry, parking, gym, concierge, elevator, balcony, pet friendliness, and storage." },
+    { pts: "15 pts", label: "Value for location", desc: "Looks at whether the rent makes sense for where the building sits. Factors include transit access, walkability, distance to downtown, campus proximity, and local demand." },
+    { pts: "15 pts", label: "Building features", desc: "Scores the amenities renters actually care about: in-unit laundry, parking, air conditioning, gym, concierge, elevator, balcony, pet friendliness, and storage." },
     { pts: "15 pts", label: "Market competitiveness", desc: "Compares the building to other active listings and renter submissions nearby. A building priced below similar buildings in the area scores higher here." },
     { pts: "10 pts", label: "Renter data confidence", desc: "Scores how reliable the ranking is based on how much renter data FairRent has collected for that building. More recent submissions from more renters means a more reliable score." },
-    { pts: "10 pts", label: "Affordability pressure", desc: "Looks at whether the building is accessible relative to local income and typical renter budgets in Vancouver." },
+    { pts: "10 pts", label: "Affordability pressure", desc: "Looks at whether the building is accessible relative to local income and typical renter budgets, especially near student campuses." },
   ];
   return (
     <div className="meth-card">
@@ -314,12 +333,6 @@ function BuildingCard({ building, score, hoodName, showHoodTag, onSubmit }) {
           )}
         </div>
 
-        {/* CTA */}
-        <div>
-          <button className="bcard-cta" onClick={onSubmit}>
-            Live here? Submit your rent anonymously
-          </button>
-        </div>
       </div>
     </div>
   );
@@ -374,7 +387,7 @@ function HoodComparisonTable({ hoods, cityBases, onHoodClick }) {
 
 const CITY_FAQS = [
   {
-    q: "How does FairRent Canada score Vancouver rental buildings?",
+    q: "How does FairRent Canada score rental buildings?",
     a: "Each building gets a score out of 100 based on six categories: rent fairness (35 points), value for location (15 points), building features and amenities (15 points), market competitiveness (15 points), renter data confidence (10 points), and affordability pressure (10 points). Scores are estimates based on anonymous renter submissions and public rental listings. They are not official ratings.",
   },
   {
@@ -382,12 +395,12 @@ const CITY_FAQS = [
     a: "A score only appears when FairRent has at least 5 renter submissions for that building. Fewer than that and we show Limited data to protect renter privacy and avoid misleading averages. The easiest way to improve your building's score is to submit your own rent anonymously.",
   },
   {
-    q: "Can a high-priced building in Coal Harbour or Yaletown still score well?",
-    a: "Yes. We do not punish a building just because it is expensive. A luxury building in Coal Harbour can still score well if its rent is fair compared to similar luxury buildings in the same neighbourhood. The score compares apples to apples, not waterfront towers to East Van walk-ups.",
+    q: "Can a high-priced building still score well?",
+    a: "Yes. We do not punish a building just because it is expensive. A luxury building in Coal Harbour can still score well if its rent is fair compared to similar luxury buildings in the same neighbourhood. The score compares apples to apples, not luxury buildings to student apartments.",
   },
   {
     q: "How is this different from Yelp or Google Reviews?",
-    a: "FairRent Canada focuses on rent data, not reviews. We collect anonymous rent amounts and building details from current and past tenants to build a data picture of what Vancouver renters actually pay. We do not publish reviews, complaints, or accusations about landlords.",
+    a: "FairRent Canada focuses on rent data, not reviews. We collect anonymous rent amounts and building details from current and past tenants to build a data picture of what renters actually pay. We do not publish reviews, complaints, or accusations about landlords.",
   },
   {
     q: "Is my submission anonymous?",
@@ -428,17 +441,22 @@ export default function BuildingRankingsPage({
 }) {
   const [buildingScores, setBuildingScores] = useState({});
   const [scoresReady, setScoresReady] = useState(false);
+  const [query, setQuery] = useState("");
 
   const isHoodPage = !!hood;
+  // Match buildings via the building-side neighbourhood map: one hood key
+  // (e.g. "centretown") covers several building-side hoods (centretown,
+  // downtown, golden-triangle, little-italy, dows-lake, ...).
+  const hoodBuildingKeys = isHoodPage ? buildingHoodsFor(hoodKey) : [];
   const pageBuildings = isHoodPage
-    ? buildings.filter(b => b.neighbourhood === hoodKey)
+    ? buildings.filter(b => hoodBuildingKeys.includes(b.neighbourhood))
     : buildings;
 
   // Fetch per-building submission counts from Supabase.
   // This requires the building_name column to exist in rent_submissions.
   // Until then, all buildings will show Limited data (which is fine and honest).
   useEffect(() => {
-    const names = pageBuildings.map(b => `${b.name} - ${b.address}`);
+    const names = pageBuildings.map(b => b.address ? `${b.name} - ${b.address}` : b.name);
     if (!names.length) { setScoresReady(true); return; }
 
     supabase
@@ -447,7 +465,7 @@ export default function BuildingRankingsPage({
       .eq("city", city.key)
       .in("building_name", names)
       .gte("monthly_rent", 500)
-      .lte("monthly_rent", 10000)
+      .lte("monthly_rent", 8000)
       .then(({ data }) => {
         if (!data?.length) { setScoresReady(true); return; }
 
@@ -526,16 +544,13 @@ export default function BuildingRankingsPage({
             <h1 className="br-h1">{pageTitle}</h1>
             <p className="br-sub">{pageSubtitle}</p>
             <div className="br-cta-row">
-              <button className="btn btn-primary" onClick={handleSubmitCta}>
-                Submit my rent anonymously
-              </button>
-              <button className="btn btn-ghost" onClick={onBack}>
+              <button className="btn btn-primary" onClick={onBack}>
                 Check my rent
               </button>
             </div>
             <p style={{ fontSize:12, color:"var(--t3)", lineHeight:1.6 }}>
               {scoresReady
-                ? `Showing ${totalBuildings} known rental building${totalBuildings !== 1 ? "s" : ""} in ${isHoodPage ? hood.name : "Vancouver"}. Scores improve as renters submit data.`
+                ? `Search across ${totalBuildings} rental building${totalBuildings !== 1 ? "s" : ""} ${isHoodPage ? `in ${hood.name}` : "in Vancouver"}. Scores improve as renters submit data.`
                 : "Loading building data..."}
             </p>
           </section>
@@ -546,73 +561,111 @@ export default function BuildingRankingsPage({
             <ScoreMethodology />
           </section>
 
-          {/* Building rankings */}
+          {/* Building rankings — search-first */}
           <section className="br-section" id="rankings">
-            <div className="br-sh">Building rankings</div>
+            <div className="br-sh">Find a building</div>
             <h2 className="br-h2">
               {isHoodPage
-                ? `Rental buildings in ${hood.name}`
-                : "Vancouver rental buildings"}
+                ? `Search rental buildings in ${hood.name}`
+                : "Search Vancouver rental buildings"}
             </h2>
             <div className="br-body">
               <p>
                 {isHoodPage
-                  ? `These are the large rental buildings FairRent Canada is tracking in ${hood.name}. Scores appear when enough renters have submitted data for that building. Until then, buildings show as Limited data.`
-                  : "These are the purpose-built and condo-rental buildings FairRent Canada is tracking in Vancouver. Each score is based on anonymous renter submissions and public market data. Buildings with fewer than 5 submissions show as Limited data."}
+                  ? `Type a building name or address to see how it compares. Scores are based on anonymous renter submissions and public market data. Buildings with fewer than 5 submissions show as Limited data.`
+                  : "Type a building name or address to see how it compares. Scores are based on anonymous renter submissions and public market data. Buildings with fewer than 5 submissions show as Limited data."}
               </p>
+            </div>
+
+            <div className="bsearch-wrap">
+              <input
+                className="bsearch-input"
+                type="text"
+                placeholder={isHoodPage ? `Search buildings in ${hood.name}…` : "Search building name or address…"}
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+                aria-label="Search buildings"
+              />
+              <div className="bsearch-hint">
+                {query.trim()
+                  ? "Showing the closest matches. Click a building to focus its details."
+                  : `Tip: try a name like "SoHo" or an address like "340 Queen". Or browse the top buildings below.`}
+              </div>
             </div>
 
             {!scoresReady ? (
               <div style={{ padding:"24px", textAlign:"center", color:"var(--t3)", fontSize:14, marginTop:16 }}>
-                Loading...
+                Loading…
               </div>
             ) : pageBuildings.length === 0 ? (
               <div className="limited-notice" style={{ marginTop:16 }}>
                 <strong>No buildings tracked yet in this area.</strong>{" "}
-                If you rent in this neighbourhood, submit your building name and rent to get the ranking started.
-                <div style={{ marginTop:12 }}>
-                  <button className="btn btn-primary" onClick={handleSubmitCta}>Submit my rent</button>
+                If you rent in this neighbourhood, share your rent on the calculator to get the ranking started.
+              </div>
+            ) : (() => {
+              const restrictedHoodKey = isHoodPage ? hoodKey : null;
+              const trimmed = query.trim();
+              // Empty query: show top 10 from the page pool (priority order).
+              // Non-empty: full searchBuildings ranking, then filter to page pool if hood-scoped.
+              let results;
+              if (!trimmed) {
+                results = pageBuildings.slice(0, 10);
+              } else {
+                const raw = searchBuildings(trimmed, restrictedHoodKey, 30);
+                results = isHoodPage
+                  ? raw.filter(b => hoodBuildingKeys.includes(b.neighbourhood)).slice(0, 10)
+                  : raw.slice(0, 10);
+              }
+              return results.length === 0 ? (
+                <div className="limited-notice" style={{ marginTop:16 }}>
+                  <strong>No matches.</strong> Try a different spelling, or share your rent so this building gets added.
                 </div>
-              </div>
-            ) : (
-              <div className="buildings-grid">
-                {pageBuildings.map(b => {
-                  const key = `${b.name} - ${b.address}`;
-                  const subs = buildingScores[key] || [];
-                  // Hood name lookup: b.neighbourhood is the hood key (e.g. "kitsilano")
-                  const hoodObj = allHoods ? allHoods[b.neighbourhood] : null;
-                  const hoodName = hoodObj?.name ?? b.neighbourhood;
-                  const hoodMult = hoodObj?.hoodMult ?? 1;
-                  // Compute full score when enough data exists (uses 1br baseline as representative)
-                  let score = null;
-                  if (subs.length >= MIN_SUBS_FOR_AVG) {
-                    const avgRent = Math.round(subs.reduce((s, r) => s + r.monthly_rent, 0) / subs.length);
-                    const bench = Math.round((city.bases?.["1br"] ?? 2600) * hoodMult);
-                    if (subs.length >= MIN_SUBS_FOR_SCORE) {
-                      const fullScore = calcBuildingScore({
-                        building: b,
-                        submissions: subs,
-                        cityBaseBedroom: city.bases?.["1br"] ?? 2600,
-                        hoodMult,
-                      });
-                      score = fullScore ? { ...fullScore, avgRent } : { submissions: subs.length, avgRent, bench, rentRatio: avgRent / bench };
-                    } else {
-                      score = { submissions: subs.length, avgRent, bench, rentRatio: avgRent / bench };
-                    }
-                  }
-                  return (
-                    <BuildingCard
-                      key={b.id}
-                      building={b}
-                      score={score}
-                      hoodName={hoodName}
-                      showHoodTag={!isHoodPage}
-                      onSubmit={handleSubmitCta}
-                    />
-                  );
-                })}
-              </div>
-            )}
+              ) : (
+                <>
+                  <div className="results-meta">
+                    {trimmed
+                      ? `${results.length} match${results.length === 1 ? "" : "es"} for "${trimmed}"`
+                      : `Top ${results.length} ${isHoodPage ? hood.name : "Vancouver"} building${results.length === 1 ? "" : "s"}`}
+                  </div>
+                  <div className="buildings-grid">
+                    {results.map(b => {
+                      const key = b.address ? `${b.name} - ${b.address}` : b.name;
+                      const subs = buildingScores[key] || [];
+                      const bHood = VANCOUVER_NEIGHBOURHOODS[b.neighbourhood];
+                      const hoodObj = bHood?.hoodKey && allHoods ? allHoods[bHood.hoodKey] : null;
+                      const hoodName = bHood?.name ?? b.neighbourhood;
+                      const hoodMult = hoodObj?.hoodMult ?? 1;
+                      let score = null;
+                      if (subs.length >= MIN_SUBS_FOR_AVG) {
+                        const avgRent = Math.round(subs.reduce((s, r) => s + r.monthly_rent, 0) / subs.length);
+                        const bench = Math.round((city.bases?.["1br"] ?? 2600) * hoodMult);
+                        if (subs.length >= MIN_SUBS_FOR_SCORE) {
+                          const fullScore = calcBuildingScore({
+                            building: b,
+                            submissions: subs,
+                            cityBaseBedroom: city.bases?.["1br"] ?? 2600,
+                            hoodMult,
+                          });
+                          score = fullScore ? { ...fullScore, avgRent } : { submissions: subs.length, avgRent, bench, rentRatio: avgRent / bench };
+                        } else {
+                          score = { submissions: subs.length, avgRent, bench, rentRatio: avgRent / bench };
+                        }
+                      }
+                      return (
+                        <BuildingCard
+                          key={b.id}
+                          building={b}
+                          score={score}
+                          hoodName={hoodName}
+                          showHoodTag={!isHoodPage}
+                          onSubmit={handleSubmitCta}
+                        />
+                      );
+                    })}
+                  </div>
+                </>
+              );
+            })()}
           </section>
 
           {/* Community CTA */}
@@ -630,8 +683,7 @@ export default function BuildingRankingsPage({
                 or any details that could identify you. We group all data before publishing it.
               </p>
               <div style={{ display:"flex", flexWrap:"wrap", gap:10, marginTop:16 }}>
-                <button className="btn btn-primary" onClick={handleSubmitCta}>Submit my rent anonymously</button>
-                <button className="btn btn-ghost" onClick={onBack}>Check my rent first</button>
+                <button className="btn btn-primary" onClick={onBack}>Check my rent</button>
               </div>
               <p className="help-microcopy">
                 Anonymous - No signup - Your submission helps other Vancouver renters understand what is fair.
@@ -647,8 +699,8 @@ export default function BuildingRankingsPage({
               <div className="br-body">
                 <p>
                   Rent varies dramatically across Metro Vancouver. Coal Harbour, Yaletown, and Kitsilano
-                  typically run well above the city average. New Westminster, Richmond, and Burnaby offer
-                  more affordable options closer to or below average. Click any neighbourhood to see
+                  typically run well above the city average. New Westminster, Richmond, and Burnaby offer more
+                  affordable options closer to or below average. Click any neighbourhood to see
                   its building rankings.
                 </p>
               </div>
@@ -732,7 +784,7 @@ export default function BuildingRankingsPage({
 
         </div>
 
-        <Footer compact={true} citySuffix="Vancouver" />
+        <Footer compact={false} citySuffix="Vancouver" />
       </div>
     </>
   );
