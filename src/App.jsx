@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { createClient } from "@supabase/supabase-js";
 import NeighbourhoodPage from "./NeighbourhoodPage";
+import BuildingRankingsPage from "./BuildingRankingsPage";
 import { VANCOUVER_HOODS, VANCOUVER_CITY } from "./hoodData";
+import { VANCOUVER_BUILDINGS, getBuildingsForHoodName, resolveBuildingName } from "./buildingData";
 import Nav from "./components/Nav";
 import Footer from "./components/Footer";
 
@@ -866,6 +868,9 @@ export default function App() {
   const [parking,    setParking]    = useState(savedDraft.parking    ?? false);
   const [utilities,  setUtilities]  = useState(savedDraft.utilities  ?? false);
   const [errors,     setErrors]     = useState({});
+  // Building field — declared here so the sessionStorage useEffect below can reference them
+  const [buildingMode, setBuildingMode] = useState(savedDraft.buildingMode ?? "");
+  const [buildingText, setBuildingText] = useState(savedDraft.buildingText ?? "");
 
   // Persist on every change. sessionStorage means the draft is cleared
   // when the tab closes — no long-term storage of unsubmitted forms.
@@ -873,9 +878,10 @@ export default function App() {
     try {
       sessionStorage.setItem(FORM_KEY, JSON.stringify({
         hood, unitType, rent, moveInYear, sqft, parking, utilities,
+        buildingMode, buildingText,
       }));
     } catch {}
-  }, [FORM_KEY, hood, unitType, rent, moveInYear, sqft, parking, utilities]);
+  }, [FORM_KEY, hood, unitType, rent, moveInYear, sqft, parking, utilities, buildingMode, buildingText]);
 
   const [result,      setResult]      = useState(null);
   const [submitting,  setSubmitting]  = useState(false);
@@ -888,20 +894,35 @@ export default function App() {
   const [rawCount,    setRawCount]    = useState(0);
   const [countLoaded, setCountLoaded] = useState(false);
   const displayCount = useCountUp(countLoaded ? rawCount : 0);
-  const [showHood,    setShowHood]    = useState(null);
+  const [showHood,             setShowHood]             = useState(null);
+  // null = main page, "city" = /building-rankings, hoodKey = /{slug}/building-rankings
+  const [showBuildingRankings, setShowBuildingRankings] = useState(null);
 
+  // Set to true after running the Supabase migration:
+  //   ALTER TABLE rent_submissions ADD COLUMN building_name text;
+  // Until then building names are collected in the form but not sent to the database.
+  const BUILDING_COLUMN_READY = false;
+
+  // URL-based routing: handles neighbourhood slugs and building-rankings paths
   useEffect(() => {
-    const path = window.location.pathname.replace(/^\//, '');
-    if (path && path !== 'map') {
+    function parsePath(pathname) {
+      const path = pathname.replace(/^\//, '');
+      if (!path || path === 'map') { setShowHood(null); setShowBuildingRankings(null); return; }
+      // /building-rankings
+      if (path === 'building-rankings') { setShowBuildingRankings('city'); setShowHood(null); return; }
+      // /{hood-slug}/building-rankings
+      const parts = path.split('/');
+      if (parts.length === 2 && parts[1] === 'building-rankings') {
+        const hoodEntry = Object.entries(VANCOUVER_HOODS).find(([, h]) => h.slug === parts[0]);
+        if (hoodEntry) { setShowBuildingRankings(hoodEntry[0]); setShowHood(null); return; }
+      }
+      // /{hood-slug}
       const found = Object.entries(VANCOUVER_HOODS).find(([, h]) => h.slug === path);
-      if (found) setShowHood(found[0]);
+      if (found) { setShowHood(found[0]); setShowBuildingRankings(null); return; }
+      setShowHood(null); setShowBuildingRankings(null);
     }
-    function onPop() {
-      const s = window.location.pathname.replace(/^\//, '');
-      if (!s || s === 'map') { setShowHood(null); return; }
-      const f = Object.entries(VANCOUVER_HOODS).find(([, h]) => h.slug === s);
-      setShowHood(f ? f[0] : null);
-    }
+    parsePath(window.location.pathname);
+    function onPop() { parsePath(window.location.pathname); }
     window.addEventListener('popstate', onPop);
     return () => window.removeEventListener('popstate', onPop);
   }, []);
@@ -990,10 +1011,15 @@ export default function App() {
     try {
       const last=Number(localStorage.getItem(COOLDOWN_KEY)??0);
       if(Date.now()-last>=COOLDOWN_MS){
-        const{error}=await supabase.from("rent_submissions").insert({
+        const finalBuilding = resolveBuildingName(buildingMode, buildingText);
+        const insertData = {
           neighborhood:hood,unit_type:unitType,monthly_rent:rentNum,
           move_in_year:yr,includes_parking:parking,includes_utilities:utilities,city:CITY,
-        });
+        };
+        // Include building_name only after the Supabase column migration is applied.
+        // See BUILDING_COLUMN_READY flag at the top of this component.
+        if (BUILDING_COLUMN_READY && finalBuilding) insertData.building_name = finalBuilding;
+        const{error}=await supabase.from("rent_submissions").insert(insertData);
         if(!error){localStorage.setItem(COOLDOWN_KEY,String(Date.now()));setRawCount(p=>p+1);}
         else setSaveWarning("Result shown. Your submission was not saved due to a server error.");
       }
@@ -1004,6 +1030,7 @@ export default function App() {
   function handleReset() {
     setResult(null); setHood(""); setUnitType(""); setRent(""); setMoveInYear(""); setSqft("");
     setParking(false); setUtilities(false); setErrors({}); setSaveWarning("");
+    setBuildingMode(""); setBuildingText("");
     try { sessionStorage.removeItem(FORM_KEY); } catch {}
     window.scrollTo(0,0);
   }
@@ -1013,11 +1040,53 @@ export default function App() {
     : null;
   const benchLabel = communityN>=20?`${communityN} local submissions`:communityN>=5?`${communityN} submissions + CMHC`:"CMHC baseline";
 
+  function navToBuildingRankings(hoodKey) {
+    if (!hoodKey) {
+      setShowBuildingRankings('city');
+      setShowHood(null);
+      window.history.pushState({}, '', '/building-rankings');
+      window.scrollTo(0, 0);
+    } else {
+      const slug = VANCOUVER_HOODS[hoodKey]?.slug;
+      setShowBuildingRankings(hoodKey);
+      setShowHood(null);
+      window.history.pushState({}, '', slug ? `/${slug}/building-rankings` : '/building-rankings');
+      window.scrollTo(0, 0);
+    }
+  }
+
+  if (showBuildingRankings) {
+    const hoodKey = showBuildingRankings === 'city' ? null : showBuildingRankings;
+    return (
+      <BuildingRankingsPage
+        city={VANCOUVER_CITY}
+        buildings={VANCOUVER_BUILDINGS}
+        hood={hoodKey ? VANCOUVER_HOODS[hoodKey] : null}
+        hoodKey={hoodKey}
+        allHoods={VANCOUVER_HOODS}
+        onBack={() => {
+          setShowBuildingRankings(null); setShowHood(null);
+          window.history.pushState({}, '', '/'); window.scrollTo(0, 0);
+        }}
+        onSubmit={() => {
+          setShowBuildingRankings(null); setShowHood(null);
+          window.history.pushState({}, '', '/');
+          setTimeout(() => {
+            const el = document.getElementById('form');
+            if (el) el.scrollIntoView({ behavior:'smooth', block:'start' });
+          }, 80);
+        }}
+        onHoodRankings={navToBuildingRankings}
+      />
+    );
+  }
+
   if (showHood) return (
     <NeighbourhoodPage
       hood={VANCOUVER_HOODS[showHood]}
       city={VANCOUVER_CITY}
       onBack={() => { setShowHood(null); window.history.pushState({}, '', '/'); window.scrollTo(0,0); }}
+      onBuildingRankings={() => navToBuildingRankings(showHood)}
     />
   );
 
@@ -1094,6 +1163,16 @@ export default function App() {
                   </a>
                 );
               })}
+            </div>
+            <div style={{ marginTop:14 }}>
+              <a
+                href="/building-rankings"
+                style={{ fontSize:13, color:"var(--accent)", fontWeight:600, textDecoration:"none", display:"inline-flex", alignItems:"center", gap:5 }}
+                onClick={e => { e.preventDefault(); navToBuildingRankings(null); }}
+              >
+                View Vancouver building rankings
+                <span style={{ fontSize:11 }}>&#8250;</span>
+              </a>
             </div>
           </div>
 
@@ -1173,6 +1252,44 @@ export default function App() {
                           <div className="toggle-item-sub">{t('utilitiesSub')}</div>
                         </div>
                       </label>
+                    </div>
+                  </div>
+
+                  {/* Building field */}
+                  <div>
+                    <label className="field-label">
+                      Building name or address
+                      <span style={{ fontWeight:400, textTransform:"none", marginLeft:6 }}>(optional)</span>
+                    </label>
+                    <div className="field-note" style={{ marginBottom:8 }}>
+                      This helps us compare rent inside specific buildings. You can leave it blank if you prefer.
+                    </div>
+                    <select
+                      className="f-select"
+                      value={buildingMode}
+                      onChange={e => { setBuildingMode(e.target.value); if (e.target.value !== 'other') setBuildingText(''); }}
+                    >
+                      <option value="">Search existing building...</option>
+                      {getBuildingsForHoodName(hood).map(b => (
+                        <option key={b.id} value={b.id}>{b.name} - {b.address}</option>
+                      ))}
+                      <option value="other">Other building</option>
+                      <option value="skip">I prefer not to say</option>
+                    </select>
+                    {buildingMode === 'other' && (
+                      <input
+                        className="f-input"
+                        type="text"
+                        placeholder="Enter building name or address"
+                        value={buildingText}
+                        onChange={e => setBuildingText(e.target.value)}
+                        maxLength={200}
+                        style={{ marginTop:8 }}
+                      />
+                    )}
+                    <div className="field-note" style={{ marginTop:6 }}>
+                      Your submission helps other renters compare prices in this building.
+                      We never show personal details. Building averages are only published once enough renters have submitted.
                     </div>
                   </div>
 

@@ -173,7 +173,7 @@ function monthYear(iso) {
   } catch { return ""; }
 }
 
-export default function NeighbourhoodPage({ hood, city, onBack }) {
+export default function NeighbourhoodPage({ hood, city, onBack, onBuildingRankings }) {
   const [submissions, setSubmissions] = useState({});
   const [lastSubmittedAt, setLastSubmittedAt] = useState(null);
   const [ready, setReady] = useState(false);
@@ -411,6 +411,9 @@ export default function NeighbourhoodPage({ hood, city, onBack }) {
             <p className="hood-vs"><strong>{hood.name} rents</strong> are {vsText}.</p>
             <div className="hood-cta-row">
               <a className="btn btn-primary" href={checkUrl}>Share my rent in {hood.name}</a>
+              {onBuildingRankings && (
+                <button className="btn btn-ghost" onClick={onBuildingRankings}>See building rankings</button>
+              )}
               <a className="btn btn-ghost" href={mapUrl}>Explore the {city.name} map</a>
             </div>
           </section>
