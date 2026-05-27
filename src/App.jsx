@@ -1161,7 +1161,6 @@ export default function App() {
           actions={{
             onBlog:           () => { window.location.href = "https://fairrent.ca/blog"; },
             onExploreCities:  () => { window.location.href = "https://fairrent.ca/"; },
-            onNeighbourhoods: () => { window.location.href = "https://fairrent.ca/map?city=vancouver"; },
             onSubmitRent:     () => { const el=document.getElementById("form"); if(el) el.scrollIntoView({behavior:"smooth",block:"start"}); else window.scrollTo({top:0,behavior:"smooth"}); },
             onAbout:          () => { window.location.href = "https://fairrent.ca/about"; },
             onToggleLang:     toggleLang,
@@ -1169,7 +1168,6 @@ export default function App() {
           labels={{
             blog:           lang === "fr" ? "Blogue"             : "Blog",
             cities:         lang === "fr" ? "Villes"             : "Cities",
-            neighbourhoods: lang === "fr" ? "Quartiers"          : "Neighbourhoods",
             submit:         lang === "fr" ? "Partager mon loyer" : "Share my rent",
             about:          lang === "fr" ? "À propos"           : "About",
             primaryCta:     lang === "fr" ? "Partager mon loyer" : "Share my rent",
@@ -1191,7 +1189,6 @@ export default function App() {
             <p className="city-hero-sub"><strong>{t('heroSubStrong')}</strong> {t('heroSubRest')}</p>
             <div className="city-hero-actions">
               <button className="city-hero-btn city-hero-btn-primary" onClick={()=>{const el=document.getElementById("form"); if(el) el.scrollIntoView({behavior:"smooth",block:"start"}); window.frc?.track?.('city_hero_primary_click',{city:CITY});}}>{t('heroCtaPrimary')}</button>
-              <a className="city-hero-btn city-hero-btn-ghost" href="https://fairrent.ca/map?city=vancouver" onClick={()=>window.frc?.track?.('city_hero_explore_click',{city:CITY})}>{t('heroCtaSecondary')}</a>
               <a className="city-hero-btn city-hero-btn-ghost" href="/building-rankings" onClick={e=>{e.preventDefault(); window.frc?.track?.('city_hero_buildings_click',{city:CITY}); navToBuildingRankings(null);}}>{lang === "fr" ? "Classement des immeubles" : "See building rankings"}</a>
             </div>
             <div className="city-hero-ticker" aria-live="polite">

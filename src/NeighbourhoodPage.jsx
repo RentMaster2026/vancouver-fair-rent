@@ -294,7 +294,6 @@ export default function NeighbourhoodPage({ hood, city, onBack, onBuildingRankin
   const lastUpdated = lastSubmittedAt ? monthYear(lastSubmittedAt) : monthYear(new Date().toISOString());
 
   const checkUrl = `${city.calcUrl}?hood=${encodeURIComponent(hood.name)}`;
-  const mapUrl   = `https://fairrent.ca/map?city=${city.key}`;
   const methodologyUrl = "https://fairrent.ca/methodology";
   const privacyUrl     = "https://fairrent.ca/privacy";
 
@@ -361,7 +360,6 @@ export default function NeighbourhoodPage({ hood, city, onBack, onBuildingRankin
           actions={{
             onBlog:           () => { window.location.href = "https://fairrent.ca/blog"; },
             onExploreCities:  () => { window.location.href = "https://fairrent.ca/"; },
-            onNeighbourhoods: () => { window.location.href = mapUrl; },
             onSubmitRent:     () => { window.location.href = checkUrl; },
             onAbout:          () => { window.location.href = "https://fairrent.ca/about"; },
             onToggleLang:     () => {},
@@ -369,7 +367,6 @@ export default function NeighbourhoodPage({ hood, city, onBack, onBuildingRankin
           labels={{
             blog:           "Blog",
             cities:         "Cities",
-            neighbourhoods: "Neighbourhoods",
             submit:         "Share my rent",
             about:          "About",
             primaryCta:     "Share my rent",
@@ -414,7 +411,6 @@ export default function NeighbourhoodPage({ hood, city, onBack, onBuildingRankin
               {onBuildingRankings && (
                 <button className="btn btn-ghost" onClick={onBuildingRankings}>See building rankings</button>
               )}
-              <a className="btn btn-ghost" href={mapUrl}>Explore the {city.name} map</a>
             </div>
           </section>
 
@@ -551,7 +547,6 @@ export default function NeighbourhoodPage({ hood, city, onBack, onBuildingRankin
             <div className="sh">More from FairRent</div>
             <div className="link-grid">
               <a href={city.calcUrl}>Compare more {city.name} neighbourhoods →</a>
-              <a href={mapUrl}>Explore the {city.name} rent map →</a>
               <a href={checkUrl}>Share my rent anonymously →</a>
               <a href={methodologyUrl}>How our benchmarks work →</a>
               <a href={privacyUrl}>Privacy policy →</a>

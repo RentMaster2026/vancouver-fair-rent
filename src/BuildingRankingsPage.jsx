@@ -531,7 +531,6 @@ export default function BuildingRankingsPage({
           actions={{
             onBlog:           () => { window.location.href = "https://fairrent.ca/blog"; },
             onExploreCities:  () => { window.location.href = "https://fairrent.ca/"; },
-            onNeighbourhoods: () => { window.location.href = "https://fairrent.ca/map?city=vancouver"; },
             onSubmitRent:     handleSubmitCta,
             onAbout:          () => { window.location.href = "https://fairrent.ca/about"; },
           }}
@@ -774,7 +773,6 @@ export default function BuildingRankingsPage({
             <div style={{ display:"flex", flexWrap:"wrap", gap:8, marginTop:10 }}>
               {[
                 { label: "Check if your rent is fair", href: "#", fn: onBack },
-                { label: "Browse Vancouver neighbourhoods", href: "https://fairrent.ca/map?city=vancouver" },
                 { label: "How we calculate scores", href: "https://fairrent.ca/methodology" },
                 { label: "Privacy policy", href: "https://fairrent.ca/privacy" },
               ].map(l => (

@@ -5,7 +5,7 @@
 //   citySuffix?   string  e.g. "Ottawa" — appended to wordmark on city sites
 //   homeHref?     string  where the wordmark points (hub: "/", cities: "https://fairrent.ca")
 //   onWordmark?   fn      optional handler instead of plain navigation
-//   actions       object  { onExploreCities, onNeighbourhoods, onBlog, onAbout, onSubmitRent, onToggleLang }
+//   actions       object  { onExploreCities, onBlog, onAbout, onSubmitRent, onToggleLang }
 //   labels        object  optional override of the default English labels
 //   activeKey?    string  one of "cities"|"neighbourhoods"|"blog"|"about" — highlights current nav item
 //
@@ -98,7 +98,6 @@ export default function Nav({ citySuffix, homeHref, onWordmark, actions = {}, la
 
   const L = {
     cities: "Cities",
-    neighbourhoods: "Neighbourhoods",
     blog: "Blog",
     about: "About",
     langLabel: "Français",
@@ -126,7 +125,6 @@ export default function Nav({ citySuffix, homeHref, onWordmark, actions = {}, la
 
   const navItems = [
     { key: "cities",         label: L.cities,         fn: actions.onExploreCities },
-    { key: "neighbourhoods", label: L.neighbourhoods, fn: actions.onNeighbourhoods },
     { key: "blog",           label: L.blog,           fn: actions.onBlog },
     { key: "about",          label: L.about,          fn: actions.onAbout },
   ];

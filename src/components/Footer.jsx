@@ -80,7 +80,6 @@ function MobileGroupedFooter({ year, citySuffix, actions }) {
           <a className="frc-footer-mobile-link" href="https://ottawafairrent.ca">Ottawa</a>
           <a className="frc-footer-mobile-link" href="https://torontofairrent.ca">Toronto</a>
           <a className="frc-footer-mobile-link" href="https://vancouverfairrent.ca">Vancouver</a>
-          <a className="frc-footer-mobile-link" href="https://fairrent.ca/map" onClick={click(actions?.onMap)}>Neighbourhoods</a>
         </div>
 
         <div className="frc-footer-mobile-col">
@@ -156,13 +155,11 @@ export default function Footer({ actions = {}, citySuffix, compact = false }) {
               <a className="frc-footer-link" href="https://ottawafairrent.ca">Ottawa</a>
               <a className="frc-footer-link" href="https://torontofairrent.ca">Toronto</a>
               <a className="frc-footer-link" href="https://vancouverfairrent.ca">Vancouver</a>
-              <a className="frc-footer-link" href="https://fairrent.ca/map" onClick={click(actions.onMap, "/map")}>Neighbourhoods</a>
             </div>
 
             <div className="frc-footer-col">
               <div className="frc-footer-h">Contribute</div>
               <a className="frc-footer-link" href="https://ottawafairrent.ca/#form" onClick={click(actions.onSubmitRent, "/submit")}>Share your rent</a>
-              <a className="frc-footer-link" href="https://fairrent.ca/map" onClick={click(actions.onMap, "/map")}>Explore the rent map</a>
               <button className="frc-footer-link" onClick={click(actions.onToggleLang, "/lang")}>Français</button>
             </div>
           </div>
