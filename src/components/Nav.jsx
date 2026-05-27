@@ -48,8 +48,8 @@ const CSS = `
   }
 
   /* Mobile drawer */
-  .frc-drawer-backdrop{position:fixed;inset:0;background:rgba(15,22,28,0.45);z-index:60;opacity:0;pointer-events:none;transition:opacity .15s ease;}
-  .frc-drawer-backdrop.open{opacity:1;pointer-events:auto;}
+  .frc-drawer-backdrop{position:fixed;inset:0;background:rgba(15,22,28,0.45);z-index:60;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .15s ease,visibility 0s linear .15s;}
+  .frc-drawer-backdrop.open{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .15s ease,visibility 0s linear 0s;}
   .frc-drawer{position:fixed;top:0;right:0;bottom:0;width:min(340px,86vw);background:#fff;color:#1d2a35;z-index:61;transform:translateX(100%);transition:transform .22s ease;display:flex;flex-direction:column;}
   .frc-drawer.open{transform:translateX(0);}
   .frc-drawer-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #eef0f2;height:60px;}
@@ -71,15 +71,28 @@ export default function Nav({ citySuffix, homeHref, onWordmark, actions = {}, la
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    if (!open) return;
-    const onKey = (e) => { if (e.key === "Escape") setOpen(false); };
-    document.addEventListener("keydown", onKey);
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
-    };
+    if (open) {
+      const onKey = (e) => { if (e.key === "Escape") setOpen(false); };
+      document.addEventListener("keydown", onKey);
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.removeEventListener("keydown", onKey);
+        document.body.style.overflow = "";
+      };
+    }
+    // Defensive: ensure body scroll is restored whenever open is false.
+    // Belt-and-braces in case the cleanup above didn't run (e.g. the parent
+    // unmounted Nav during a navigation while the drawer was open, leaving
+    // body.style.overflow stuck at "hidden" — which is what was causing
+    // the "page stays grey after closing the menu" report on iOS Safari).
+    document.body.style.overflow = "";
   }, [open]);
+
+  // Final safety net: if Nav unmounts entirely (e.g. user navigates to a
+  // different page that renders a different shell), restore scroll.
+  useEffect(() => {
+    return () => { document.body.style.overflow = ""; };
+  }, []);
 
   const L = {
     cities: "Cities",

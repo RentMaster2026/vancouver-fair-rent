@@ -389,7 +389,9 @@ const CSS = `
     .page-wrap{display:flex;flex-direction:column;}
     .page-wrap > div[style*="border-bottom"]{display:none;}
     .page-grid{order:1;}
-    .sources{order:2;margin-top:28px;padding-top:18px;}
+    /* Sources line: tighter top margin and centered text so the small-print
+       disclaimer reads as a footnote rather than a long left-aligned wall. */
+    .sources{order:2;margin-top:20px;padding-top:16px;text-align:center;}
     .hood-section{order:3;display:none;}
   }
   .hood-label{font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;}
@@ -514,11 +516,16 @@ const CSS = `
   @media(max-width:760px){
     .mobile-sticky-cta{display:block;position:fixed;left:0;right:0;bottom:0;padding:6px 12px env(safe-area-inset-bottom);background:rgba(255,255,255,0.96);border-top:1px solid #d8dde2;z-index:50;backdrop-filter:saturate(140%) blur(8px);box-shadow:0 -1px 6px rgba(0,0,0,0.05);}
     .mobile-sticky-cta a{display:block;background:var(--accent);color:#fff;text-align:center;padding:12px;font-size:13.5px;font-weight:600;text-decoration:none;border-radius:6px;letter-spacing:0;}
-    .page-wrap{padding-bottom:68px;}
-    .frc-footer{margin-bottom:68px;}   /* keep footer above the sticky CTA */
-    /* Calculator mobile ergonomics */
+    /* Page-wrap doesn't need bottom padding because the Footer carries the
+       sticky-CTA clearance margin. This removes the awkward empty gap
+       between the sources paragraph and the footer. */
+    .page-wrap{padding-bottom:16px;}
+    .frc-footer{margin-bottom:72px;}   /* clears the fixed-bottom sticky CTA */
+    /* Calculator mobile ergonomics — 16px on inputs prevents iOS Safari's
+       auto-zoom on focus, which was causing the "page zoomed in after submit"
+       layout glitch. */
     .form-body{padding:16px;gap:16px;}
-    .f-input,.f-select{padding:11px 12px;font-size:15px;}
+    .f-input,.f-select{padding:12px;font-size:16px;}
     .f-select{padding-right:34px;}
     .field-label{font-size:11px;color:#5a6571;letter-spacing:0.03em;margin-bottom:5px;}
     .field-note{font-size:11px;color:#8a939c;line-height:1.5;margin-top:4px;}
