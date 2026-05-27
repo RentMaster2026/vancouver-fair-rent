@@ -510,11 +510,22 @@ export default function NeighbourhoodPage({ hood, city, onBack }) {
             </div>
           </section>
 
-          {/* RENTER GUIDE */}
+          {/* RENTER GUIDE — neighbourhood-specific tips first, then the
+              generic checklist that applies city-wide. */}
           <section className="section">
             <div className="sh">For renters</div>
             <h2 className="h2">Before renting in {hood.name}</h2>
-            <p className="body" style={{ marginBottom: 12 }}>Practical things to check before signing or renewing a lease.</p>
+            {hood.localTips?.length > 0 && (
+              <>
+                <p className="body" style={{ marginBottom: 12 }}>What renters who live in {hood.name} tend to find out the hard way.</p>
+                <ul className="check-list" style={{ marginBottom: 24 }}>
+                  {hood.localTips.map((tip, i) => (
+                    <li key={i}><span className="dot"/><div>{tip}</div></li>
+                  ))}
+                </ul>
+              </>
+            )}
+            <p className="body" style={{ marginBottom: 12 }}>{hood.localTips?.length > 0 ? "And the general lease-signing checklist that applies anywhere in " + city.name + ":" : "Practical things to check before signing or renewing a lease."}</p>
             <ul className="check-list">
               <li><span className="dot"/><div><strong>Compare by unit type.</strong> Bachelor, 1 bedroom, and 2 bedroom rents vary widely in {hood.name}. Use the snapshot table above for the right benchmark.</div></li>
               <li><span className="dot"/><div><strong>Check what is included.</strong> A unit at the top of the range may include heat, water, or parking. A bare unit at the same price is more expensive in practice.</div></li>
