@@ -64,8 +64,8 @@ const CSS = `
   a:hover{text-decoration:underline;}
   button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px;}
 
-  .hood-wrap{max-width:920px;margin:0 auto;padding:24px 20px 64px;}
-  @media(max-width:640px){.hood-wrap{padding:18px 16px 48px;}}
+  .hood-wrap{max-width:920px;margin:0 auto;padding:20px 20px 40px;}
+  @media(max-width:640px){.hood-wrap{padding:16px 16px 32px;}}
 
   /* Inline breadcrumb (no dark banner) */
   .hood-crumb{font-size:13px;color:var(--t3);margin-bottom:18px;}
@@ -76,7 +76,7 @@ const CSS = `
   .hood-back:hover{color:var(--accent);text-decoration:underline;}
 
   /* Hero */
-  .hood-hero{padding-bottom:24px;margin-bottom:24px;border-bottom:1px solid var(--border-soft);}
+  .hood-hero{padding-bottom:18px;margin-bottom:18px;border-bottom:1px solid var(--border-soft);}
   .hood-eyebrow{font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.14em;margin-bottom:10px;}
   .hood-title{font-family:var(--serif);font-size:clamp(28px,3.6vw,42px);font-weight:700;color:var(--t1);letter-spacing:-0.01em;line-height:1.12;margin-bottom:14px;max-width:780px;}
   .hood-sub{font-size:15.5px;color:var(--t2);line-height:1.6;max-width:680px;margin-bottom:18px;}
@@ -96,7 +96,7 @@ const CSS = `
   }
 
   /* Section heads */
-  .section{margin-top:34px;}
+  .section{margin-top:22px;}
   .sh{font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.14em;margin-bottom:8px;}
   .h2{font-family:var(--serif);font-size:clamp(20px,2.4vw,26px);font-weight:700;color:var(--t1);letter-spacing:-0.005em;line-height:1.25;margin-bottom:10px;}
   .body{font-size:15px;color:var(--t2);line-height:1.7;max-width:720px;}
@@ -541,20 +541,7 @@ export default function NeighbourhoodPage({ hood, city, onBack, onBuildingRankin
             <h2 className="h2">FAQ for renters in {hood.name}</h2>
             {faqs.map((f, i) => <FaqItem key={i} q={f.q} a={f.a}/>)}
           </section>
-
-          {/* INTERNAL LINKS */}
-          <section className="section">
-            <div className="sh">More from FairRent</div>
-            <div className="link-grid">
-              <a href={city.calcUrl}>Compare more {city.name} neighbourhoods →</a>
-              <a href={checkUrl}>Share my rent anonymously →</a>
-              <a href={methodologyUrl}>How our benchmarks work →</a>
-              <a href={privacyUrl}>Privacy policy →</a>
-              <a href="https://fairrent.ca/faq">All FAQ →</a>
-            </div>
-          </section>
-
-          <p className="footer-line">
+<p className="footer-line">
             FairRent Canada · {city.name} Rent Calculator · {hood.name} rent data.<br/>
             Sources: CMHC Rental Market Survey (October 2024), Rentals.ca market listings (2025), anonymous renter submissions. Results are estimates only. Not legal, financial, or real estate advice. Last updated {lastUpdated}.<br/>
             <a href="https://fairrent.ca">fairrent.ca</a> · <a href={methodologyUrl}>Methodology</a> · <a href={privacyUrl}>Privacy</a> · <a href="https://fairrent.ca/contact">Contact</a>
