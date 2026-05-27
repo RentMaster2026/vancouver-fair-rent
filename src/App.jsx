@@ -1132,6 +1132,7 @@ export default function App() {
             <div className="city-hero-actions">
               <button className="city-hero-btn city-hero-btn-primary" onClick={()=>{const el=document.getElementById("form"); if(el) el.scrollIntoView({behavior:"smooth",block:"start"}); window.frc?.track?.('city_hero_primary_click',{city:CITY});}}>{t('heroCtaPrimary')}</button>
               <a className="city-hero-btn city-hero-btn-ghost" href="https://fairrent.ca/map?city=vancouver" onClick={()=>window.frc?.track?.('city_hero_explore_click',{city:CITY})}>{t('heroCtaSecondary')}</a>
+              <a className="city-hero-btn city-hero-btn-ghost" href="/building-rankings" onClick={e=>{e.preventDefault(); window.frc?.track?.('city_hero_buildings_click',{city:CITY}); navToBuildingRankings(null);}}>{lang === "fr" ? "Classement des immeubles" : "See building rankings"}</a>
             </div>
             <div className="city-hero-ticker" aria-live="polite">
               {countLoaded ? (
