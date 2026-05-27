@@ -8,7 +8,7 @@ export const VANCOUVER_HOODS = {
     localTips: [
       "Most stock is older walk-ups (3-4 storey, 1960s-70s) and upper floors of character houses. New condo construction is limited by zoning.",
       "Beach proximity is the rent driver. North of West 4th is meaningfully more expensive than south of Broadway for similar units.",
-      "No SkyTrain — buses (4, 7, 9, 99 B-Line) carry the load. Plan extra commute time vs neighbourhoods on the SkyTrain network.",
+      "No SkyTrain, buses (4, 7, 9, 99 B-Line) carry the load. Plan extra commute time vs neighbourhoods on the SkyTrain network.",
     ],
   },
   yaletown: {
@@ -18,7 +18,7 @@ export const VANCOUVER_HOODS = {
     context: "Premium finishes and central location push rents consistently above the city average.",
     nearbyHoods: ["Downtown", "West End", "Mount Pleasant"],
     localTips: [
-      "Almost all rentals are condo-rentals in newer high-rises. Strata rules vary by building — some allow short-term rentals, some explicitly don't.",
+      "Almost all rentals are condo-rentals in newer high-rises. Strata rules vary by building, some allow short-term rentals, some explicitly don't.",
       "Yaletown-Roundhouse SkyTrain (Canada Line) puts the airport, Richmond, and downtown on one line. A real differentiator for frequent travellers.",
       "False Creek-facing units command a significant premium over north-facing units in the same building. Confirm orientation, not just the floor.",
     ],
@@ -43,7 +43,7 @@ export const VANCOUVER_HOODS = {
     nearbyHoods: ["Mount Pleasant", "Grandview Woodland", "Hastings Sunrise"],
     localTips: [
       "Older 3-storey walk-ups dominate the rental stock. Many were built in the 1960s and 70s; expect radiator heat, single bathrooms, and small kitchens.",
-      "Commercial-Broadway SkyTrain (Expo + Millennium lines) is the central transit hub — major commuting advantage for downtown and Burnaby workers.",
+      "Commercial-Broadway SkyTrain (Expo + Millennium lines) is the central transit hub, major commuting advantage for downtown and Burnaby workers.",
       "Italian Days, Car-Free Day and other neighbourhood events spike summer foot traffic. Renters who like a busy street scene love it here; quieter renters often prefer the side streets.",
     ],
   },
@@ -55,7 +55,7 @@ export const VANCOUVER_HOODS = {
     nearbyHoods: ["Downtown", "Yaletown", "Kitsilano"],
     localTips: [
       "Lots of older mid-rise apartment buildings (1960s-80s), many rent-controlled under BC's annual increase guideline.",
-      "Walkable to Stanley Park, English Bay and downtown — this is the area's defining feature. No subway, but bus service is frequent.",
+      "Walkable to Stanley Park, English Bay and downtown, this is the area's defining feature. No subway, but bus service is frequent.",
       "Older buildings often include heat and hot water in rent. Newer condo-rentals almost never do. The effective rent difference can be $100-200/mo.",
     ],
   },
@@ -68,7 +68,7 @@ export const VANCOUVER_HOODS = {
     localTips: [
       "VGH proximity is the main rent driver. Many buildings explicitly market to medical professionals and lease quickly when units come up.",
       "Mix of older walk-ups and newer mid-rises. Broadway-City Hall and Olympic Village SkyTrain stations cover the eastern edge.",
-      "Many of the older buildings include heat and hot water. Confirm before signing — it changes the effective rent.",
+      "Many of the older buildings include heat and hot water. Confirm before signing, it changes the effective rent.",
     ],
   },
   downtown: {
@@ -80,7 +80,7 @@ export const VANCOUVER_HOODS = {
     localTips: [
       "Nearly all rentals are condo-rentals in high-rises. Older mid-rise stock exists but is shrinking as buildings get replaced.",
       "Three SkyTrain lines, the SeaBus, and dense bus service mean a car is genuinely unnecessary. Many condo buildings rent parking separately.",
-      "View premium is significant — water/mountain-facing units carry a meaningful price difference over street-facing units on the same floor.",
+      "View premium is significant, water/mountain-facing units carry a meaningful price difference over street-facing units on the same floor.",
     ],
   },
   richmond: {
@@ -92,7 +92,7 @@ export const VANCOUVER_HOODS = {
     localTips: [
       "Canada Line is the rent driver. Buildings within 5 minutes of Brighouse, Aberdeen or Lansdowne stations rent for noticeably more than those further out.",
       "Newer condo high-rises dominate near the Canada Line; older townhouses and low-rises are spread further into the suburbs.",
-      "YVR airport is 20 minutes away on the Canada Line — meaningful if you travel for work.",
+      "YVR airport is 20 minutes away on the Canada Line, meaningful if you travel for work.",
     ],
   },
   burnaby: {
@@ -102,8 +102,8 @@ export const VANCOUVER_HOODS = {
     context: "Metrotown and Brentwood areas command premiums within Burnaby itself.",
     nearbyHoods: ["Richmond", "New Westminster", "East Vancouver"],
     localTips: [
-      "Metrotown and Brentwood are the two main rental hubs. Brand-new towers cluster around both — expect modern finishes and high condo fees baked into rent.",
-      "Both Expo and Millennium SkyTrain lines run through Burnaby. Check which line your daily destination is on — they cover very different parts of the city.",
+      "Metrotown and Brentwood are the two main rental hubs. Brand-new towers cluster around both, expect modern finishes and high condo fees baked into rent.",
+      "Both Expo and Millennium SkyTrain lines run through Burnaby. Check which line your daily destination is on, they cover very different parts of the city.",
       "Older walk-ups along Kingsway are typically the most affordable, but condition varies. Worth seeing in person.",
     ],
   },
@@ -114,7 +114,7 @@ export const VANCOUVER_HOODS = {
     context: "Rents are close to the city average, with newer buildings pushing toward the higher end.",
     nearbyHoods: ["Mount Pleasant", "Riley Park", "Fraser"],
     localTips: [
-      "Long corridor — the neighbourhood feel changes meaningfully between Mount Pleasant (Main + Broadway), Riley Park (Main + 25th), and the more suburban stretches south of King Edward.",
+      "Long corridor, the neighbourhood feel changes meaningfully between Mount Pleasant (Main + Broadway), Riley Park (Main + 25th), and the more suburban stretches south of King Edward.",
       "Bus 3 Main is the main transit and is frequent but slow. SkyTrain access requires a walk to Main Street-Science World or Broadway-City Hall.",
       "Restaurant and shopping density is highest between 6th and 25th. Listings outside that range trade off walkability for lower rent.",
     ],
@@ -127,7 +127,7 @@ export const VANCOUVER_HOODS = {
     nearbyHoods: ["Downtown Vancouver", "Chinatown", "Strathcona"],
     localTips: [
       "Mostly heritage loft-conversions in old brick warehouses, plus newer condo-towers around the edges. Loft conversions have character but quirky layouts.",
-      "Walkable to the Financial District and Coal Harbour. No SkyTrain station directly in Gastown — closest is Waterfront, about 10 minutes walk.",
+      "Walkable to the Financial District and Coal Harbour. No SkyTrain station directly in Gastown, closest is Waterfront, about 10 minutes walk.",
       "Tourist foot traffic and weekend bar noise are real. Quieter pockets exist east of Carrall, but the entire neighbourhood is busier than most of downtown.",
     ],
   },
@@ -150,7 +150,7 @@ export const VANCOUVER_HOODS = {
     context: "Rents are below the city average, but rising due to redevelopment and proximity to downtown.",
     nearbyHoods: ["Chinatown", "Gastown", "Commercial Drive"],
     localTips: [
-      "Mostly heritage houses — many split into suites. Expect old plumbing, small kitchens, and creaky floors. Some have been beautifully renovated; others not.",
+      "Mostly heritage houses, many split into suites. Expect old plumbing, small kitchens, and creaky floors. Some have been beautifully renovated; others not.",
       "Walking distance to downtown, Chinatown and the Drive. The mix of access is what makes Strathcona one of Vancouver's most underrated rental neighbourhoods.",
       "Some streets adjacent to the Downtown Eastside have visible street issues. Walk the specific block at different times before signing.",
     ],
@@ -162,7 +162,7 @@ export const VANCOUVER_HOODS = {
     context: "Rents are slightly below the city average, offering value for renters who want proximity to Commercial Drive.",
     nearbyHoods: ["Commercial Drive", "Mount Pleasant", "Hastings-Sunrise"],
     localTips: [
-      "Commercial-Broadway SkyTrain station is the central anchor — best transit access on the east side of Vancouver.",
+      "Commercial-Broadway SkyTrain station is the central anchor, best transit access on the east side of Vancouver.",
       "Mix of older walk-ups, character houses split into suites, and a growing share of newer purpose-built rentals along Broadway.",
       "The Drive's restaurant and bar density creates a real night-time energy. Renters who want quiet generally look at the streets east of Victoria Drive.",
     ],
@@ -176,7 +176,7 @@ export const VANCOUVER_HOODS = {
     localTips: [
       "Entirely condo-rentals in newer high-rises. Building amenities (pool, concierge, gym) are typically excellent and factored into the rent.",
       "Mountain or water views command a major premium. North-facing higher-floor units cost dramatically more than south-facing lower-floor ones in the same building.",
-      "Walking distance to Stanley Park, the seawall and downtown. No SkyTrain inside the neighbourhood — closest is Waterfront, a 10-minute walk.",
+      "Walking distance to Stanley Park, the seawall and downtown. No SkyTrain inside the neighbourhood, closest is Waterfront, a 10-minute walk.",
     ],
   },
   southgranville: {
@@ -187,7 +187,7 @@ export const VANCOUVER_HOODS = {
     nearbyHoods: ["Fairview", "Kerrisdale", "Marpole"],
     localTips: [
       "Mostly mid-rise rental buildings and upper floors of large character houses. New high-rise construction is limited by zoning.",
-      "No SkyTrain station directly — Bus 10 Granville is the main transit and runs frequently into downtown.",
+      "No SkyTrain station directly. Bus 10 Granville is the main transit and runs frequently into downtown.",
       "Galleries and design shops between 6th and 16th are the main amenities. Sundays are quieter than the rest of the week along the strip.",
     ],
   },
@@ -222,7 +222,7 @@ export const VANCOUVER_HOODS = {
     context: "Rents are slightly below the Vancouver average, offering value with a mountain lifestyle.",
     nearbyHoods: ["West Vancouver", "Burnaby", "Downtown Vancouver"],
     localTips: [
-      "SeaBus from Lonsdale Quay is the main transit link to downtown — 12 minutes across, then onto SkyTrain. Reliable but ends earlier than the SkyTrain network.",
+      "SeaBus from Lonsdale Quay is the main transit link to downtown. 12 minutes across, then onto SkyTrain. Reliable but ends earlier than the SkyTrain network.",
       "Lonsdale corridor has the densest amenities and the most newer purpose-built rentals. Outside Lonsdale, expect a car-dependent suburban life.",
       "Mountain access (Grouse, Cypress, Seymour) and trail access are real lifestyle differentiators for outdoorsy renters.",
     ],

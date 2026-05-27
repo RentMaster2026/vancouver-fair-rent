@@ -764,7 +764,7 @@ function ResultPanel({ result, hood, unitType, onReset, t }) {
                     </span>
                   </td>
                   <td className={bd.communityAdj===0?"":bd.communityAdj>0?"sign-pos":"sign-neg"}>
-                    {bd.communityAdj===0?"\u2014":(bd.communityAdj>0?"+":"")+fmt(bd.communityAdj)}
+                    {bd.communityAdj===0?fmt(0):(bd.communityAdj>0?"+":"")+fmt(bd.communityAdj)}
                   </td>
                 </tr>
               </tbody>
@@ -826,7 +826,7 @@ function ResultPanel({ result, hood, unitType, onReset, t }) {
           <div className="help-another-d">Share Fair Rent with someone else in Vancouver. The more renters submit, the more useful the data becomes for everyone.</div>
           <div className="help-another-row">
             <a className="help-another-btn help-another-btn-fill" href={"https://twitter.com/intent/tweet?text="+encodeURIComponent("I just checked if my "+CITY_NAME+" rent is fair on fairrent.ca")} target="_blank" rel="noopener noreferrer">Share on X</a>
-            <a className="help-another-btn help-another-btn-fill" href={"https://www.reddit.com/submit?url="+SHARE_URL+"&title="+encodeURIComponent("Fair Rent Canada — see what real renters pay")} target="_blank" rel="noopener noreferrer">Share on Reddit</a>
+            <a className="help-another-btn help-another-btn-fill" href={"https://www.reddit.com/submit?url="+SHARE_URL+"&title="+encodeURIComponent("Fair Rent Canada: see what real renters pay")} target="_blank" rel="noopener noreferrer">Share on Reddit</a>
             <button className="help-another-btn help-another-btn-out" onClick={copyLink}>{copied ? t('copied') : t('copyLink')}</button>
           </div>
         </div>
