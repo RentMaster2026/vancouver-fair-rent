@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#1c2b36" />
+  <meta name="theme-color" content="#0e7c3a" />
   <title>Commercial Drive Rent Data | Compare Rents in Vancouver | Fair Rent Canada</title>
   <meta name="description" content="Compare rent in Commercial Drive, Vancouver using CMHC data, Rentals.ca market listing data, and anonymous renter submissions. Free, anonymous, no signup." />
   <link rel="canonical" href="https://vancouverfairrent.ca/commercial-drive" />
@@ -30,101 +30,102 @@
   </script>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:#f5f5f5;color:#111;line-height:1.5;-webkit-font-smoothing:antialiased;}
-    a{color:#1a5c34;}
-    button:focus-visible,a:focus-visible{outline:2px solid #1a5c34;outline-offset:2px;}
-    .nav{background:#1c2b36;border-bottom:3px solid #1a5c34;padding:0 16px;height:48px;display:flex;align-items:center;justify-content:space-between;}
-    .nav a{font-size:13px;font-weight:700;color:#fff;text-decoration:none;}
-    .nav span{font-size:12px;color:#aab8c2;}
-    .subnav{background:#2f4553;padding:6px 16px;display:flex;flex-wrap:wrap;align-items:center;gap:14px;min-height:34px;}
-    .subnav a{color:#dde6ec;text-decoration:none;font-size:12px;font-weight:600;}
-    .subnav a.primary{background:#1a5c34;color:#fff;padding:4px 11px;border-radius:3px;}
-    .subnav a:hover{color:#fff;}
-    .bc{background:#243748;padding:6px 16px;display:flex;flex-wrap:wrap;align-items:center;font-size:11px;color:#aab8c2;gap:4px;}
-    .bc a{color:#aab8c2;text-decoration:none;}
-    .bc a:hover{color:#fff;text-decoration:underline;}
+    body{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:#f4f5f7;color:#0d1418;line-height:1.5;-webkit-font-smoothing:antialiased;}
+    a{color:#0e7c3a;}
+    button:focus-visible,a:focus-visible{outline:2px solid #0e7c3a;outline-offset:2px;}
+    .nav{background:#fff;border-bottom:1px solid #e3e6ea;padding:0 16px;height:52px;display:flex;align-items:center;justify-content:space-between;}
+    .nav a{font-size:13px;font-weight:700;color:#0d1418;text-decoration:none;}
+    .nav span{font-size:12px;color:#6a7682;}
+    .subnav{background:#fff;border-bottom:1px solid #e3e6ea;padding:8px 16px;display:flex;flex-wrap:wrap;align-items:center;gap:14px;min-height:34px;}
+    .subnav a{color:#3b4753;text-decoration:none;font-size:12px;font-weight:600;}
+    .subnav a.primary{background:#0e7c3a;color:#fff;padding:4px 11px;border-radius:6px;}
+    .subnav a:hover{color:#0e7c3a;}
+    .subnav a.primary:hover{color:#fff;}
+    .bc{background:#f4f5f7;padding:8px 16px;display:flex;flex-wrap:wrap;align-items:center;font-size:11px;color:#6a7682;gap:4px;}
+    .bc a{color:#6a7682;text-decoration:none;}
+    .bc a:hover{color:#0e7c3a;text-decoration:underline;}
     .wrap{max-width:880px;margin:0 auto;padding:24px 16px 80px;}
 
     /* Hero */
-    .hero{border-bottom:1px solid #ccc;padding-bottom:24px;margin-bottom:24px;}
-    .eyebrow{font-size:11px;font-weight:700;color:#1a5c34;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;}
-    h1{font-size:clamp(22px,4vw,32px);font-weight:700;color:#111;margin-bottom:10px;line-height:1.18;letter-spacing:-0.01em;}
-    .hero-sub{font-size:14px;color:#444;line-height:1.6;max-width:660px;margin-bottom:14px;}
-    .hero-meta{display:flex;flex-wrap:wrap;gap:10px 20px;font-size:11px;color:#767676;margin-bottom:14px;font-family:"Courier New",monospace;letter-spacing:0.02em;}
-    .hero-meta strong{color:#444;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;}
-    .badge{display:inline-block;padding:4px 10px;font-family:"Courier New",monospace;font-size:12px;font-weight:700;margin-bottom:14px;}
-    .assure{display:inline-block;background:#f0f7f2;color:#1a5c34;border:1px solid #a8d5b5;padding:4px 10px;font-size:12px;font-weight:600;border-radius:2px;margin-right:10px;}
-    .cta{display:inline-block;padding:11px 20px;background:#1a5c34;color:#fff;font-size:14px;font-weight:700;text-decoration:none;letter-spacing:0.01em;border-radius:3px;border:1px solid #1a5c34;}
-    .cta:hover{background:#15492a;}
-    .cta-out{background:#fff;color:#1a5c34;}
-    .cta-out:hover{background:#f0f7f2;}
+    .hero{border-bottom:1px solid #e3e6ea;padding-bottom:24px;margin-bottom:24px;}
+    .eyebrow{font-size:11px;font-weight:700;color:#0e7c3a;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;}
+    h1{font-size:clamp(22px,4vw,32px);font-weight:700;color:#0d1418;margin-bottom:10px;line-height:1.18;letter-spacing:-0.01em;}
+    .hero-sub{font-size:14px;color:#3b4753;line-height:1.6;max-width:660px;margin-bottom:14px;}
+    .hero-meta{display:flex;flex-wrap:wrap;gap:10px 20px;font-size:12px;color:#6a7682;margin-bottom:14px;}
+    .hero-meta strong{color:#3b4753;}
+    .badge{display:inline-block;padding:4px 10px;font-size:12px;font-weight:700;margin-bottom:14px;border-radius:6px;}
+    .assure{display:inline-block;background:#eef7f1;color:#0e7c3a;border:1px solid #cfe6d8;padding:4px 10px;font-size:12px;font-weight:600;border-radius:6px;margin-right:10px;}
+    .cta{display:inline-block;padding:11px 20px;background:#0e7c3a;color:#fff;font-size:14px;font-weight:700;text-decoration:none;letter-spacing:0.01em;border-radius:6px;border:1px solid #0e7c3a;}
+    .cta:hover{background:#0b6330;}
+    .cta-out{background:#fff;color:#0e7c3a;}
+    .cta-out:hover{background:#eef7f1;}
     .cta-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:10px;}
-    .cta-sub{font-size:12px;color:#767676;font-style:italic;margin-top:8px;}
+    .cta-sub{font-size:12px;color:#6a7682;font-style:italic;margin-top:8px;}
 
     /* Sections */
     .section{margin-bottom:30px;}
-    .sh{font-size:11px;font-weight:700;color:#1a5c34;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;}
-    .h2{font-size:18px;font-weight:700;color:#111;margin-bottom:10px;line-height:1.25;}
-    .body{font-size:14px;color:#444;line-height:1.65;}
+    .sh{font-size:11px;font-weight:700;color:#0e7c3a;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;}
+    .h2{font-size:18px;font-weight:700;color:#0d1418;margin-bottom:10px;line-height:1.25;}
+    .body{font-size:14px;color:#3b4753;line-height:1.65;}
     .body p+p{margin-top:10px;}
 
     /* Snapshot table */
-    table{width:100%;border-collapse:collapse;font-size:13px;background:#fff;border:1px solid #ccc;}
-    th{padding:9px 12px;background:#f0f0f0;border:1px solid #ccc;font-weight:700;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:0.04em;color:#444;}
-    td{padding:10px 12px;border:1px solid #e8e8e8;color:#111;}
-    td:nth-child(2){font-family:"Courier New",monospace;font-weight:700;}
-    .conf{display:inline-block;padding:2px 7px;border-radius:2px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;border:1px solid;}
-    .conf-base{background:#f0f0f0;color:#666;border-color:#ccc;}
-    .conf-strong{background:#f0f7f2;color:#1a5c34;border-color:#a8d5b5;}
+    table{width:100%;border-collapse:collapse;font-size:13px;background:#fff;border:1px solid #e3e6ea;border-radius:8px;overflow:hidden;}
+    th{padding:9px 12px;background:#fbfcfd;border-bottom:1px solid #eef0f3;font-weight:700;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:0.04em;color:#6a7682;}
+    td{padding:10px 12px;border-bottom:1px solid #eef0f3;color:#0d1418;}
+    td:nth-child(2){font-weight:700;font-variant-numeric:tabular-nums;}
+    .conf{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;border:1px solid;}
+    .conf-base{background:#f4f5f7;color:#6a7682;border-color:#e3e6ea;}
+    .conf-strong{background:#eef7f1;color:#0e7c3a;border-color:#cfe6d8;}
     .conf-growing{background:#fdf8f0;color:#7a4f00;border-color:#e8c97a;}
     .conf-limited{background:#fdf0f0;color:#8b1a1a;border-color:#e8a8a8;}
-    .src-line{font-size:11px;color:#767676;margin-top:8px;line-height:1.5;}
+    .src-line{font-size:11px;color:#6a7682;margin-top:8px;line-height:1.5;}
 
     /* Nearby pills */
     .pill-row{display:flex;gap:8px;flex-wrap:wrap;}
-    .pill{display:inline-block;padding:6px 12px;background:#fff;border:1px solid #ccc;font-size:12px;color:#444;text-decoration:none;border-radius:2px;}
-    .pill:hover{background:#f0f7f2;border-color:#1a5c34;color:#1a5c34;}
+    .pill{display:inline-block;padding:6px 12px;background:#fff;border:1px solid #e3e6ea;font-size:12px;color:#3b4753;text-decoration:none;border-radius:6px;}
+    .pill:hover{background:#eef7f1;border-color:#0e7c3a;color:#0e7c3a;}
 
     /* Limited-data notice */
-    .notice{padding:14px 16px;border-left:3px solid;background:#fdf8f0;color:#5a3d00;border-color:#7a4f00;font-size:13px;line-height:1.6;}
+    .notice{padding:14px 16px;border-left:3px solid;background:#fdf8f0;color:#5a3d00;border-color:#7a4f00;font-size:13px;line-height:1.6;border-radius:6px;}
 
     /* Mid-page submit CTA */
-    .submit-cta{background:#fff;border:1px solid #ccc;border-left:3px solid #1a5c34;padding:22px 22px 20px;}
-    .submit-cta h2{font-size:18px;font-weight:700;color:#111;margin-bottom:6px;}
-    .submit-cta p{font-size:13px;color:#444;line-height:1.6;margin-bottom:14px;}
-    .submit-cta .microcopy{font-size:11px;color:#767676;margin-top:10px;line-height:1.55;}
+    .submit-cta{background:#fff;border:1px solid #e3e6ea;border-left:3px solid #0e7c3a;padding:22px 22px 20px;border-radius:8px;}
+    .submit-cta h2{font-size:18px;font-weight:700;color:#0d1418;margin-bottom:6px;}
+    .submit-cta p{font-size:13px;color:#3b4753;line-height:1.6;margin-bottom:14px;}
+    .submit-cta .microcopy{font-size:11px;color:#6a7682;margin-top:10px;line-height:1.55;}
 
     /* Data sources block */
-    .data-block{background:#fff;border:1px solid #ccc;padding:18px 18px 16px;}
-    .data-block ul{padding-left:18px;margin-top:8px;font-size:13px;color:#444;line-height:1.7;}
+    .data-block{background:#fff;border:1px solid #e3e6ea;padding:18px 18px 16px;border-radius:8px;}
+    .data-block ul{padding-left:18px;margin-top:8px;font-size:13px;color:#3b4753;line-height:1.7;}
 
     /* Renter guide checklist */
     .check-list{padding:0;list-style:none;}
-    .check-list li{padding:9px 0;border-bottom:1px solid #ebebeb;font-size:13px;color:#444;line-height:1.6;display:flex;gap:10px;align-items:flex-start;}
+    .check-list li{padding:9px 0;border-bottom:1px solid #eef0f3;font-size:13px;color:#3b4753;line-height:1.6;display:flex;gap:10px;align-items:flex-start;}
     .check-list li:last-child{border-bottom:none;}
-    .check-list li::before{content:"";flex-shrink:0;width:6px;height:6px;border-radius:50%;background:#1a5c34;margin-top:7px;}
-    .check-list strong{color:#111;font-weight:700;}
+    .check-list li::before{content:"";flex-shrink:0;width:6px;height:6px;border-radius:50%;background:#0e7c3a;margin-top:7px;}
+    .check-list strong{color:#0d1418;font-weight:700;}
 
     /* FAQ */
-    .faq-item{border-bottom:1px solid #ebebeb;padding:12px 0;}
+    .faq-item{border-bottom:1px solid #eef0f3;padding:12px 0;}
     .faq-item:last-child{border-bottom:none;}
-    .faq-q{font-size:13px;font-weight:700;color:#111;line-height:1.45;margin-bottom:4px;}
-    .faq-a{font-size:13px;color:#444;line-height:1.7;}
+    .faq-q{font-size:13px;font-weight:700;color:#0d1418;line-height:1.45;margin-bottom:4px;}
+    .faq-a{font-size:13px;color:#3b4753;line-height:1.7;}
 
     /* Internal links footer */
     .link-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;margin-top:10px;}
-    .link-grid a{display:block;padding:10px 12px;background:#fff;border:1px solid #ccc;text-decoration:none;font-size:13px;font-weight:600;color:#1a5c34;}
-    .link-grid a:hover{background:#f0f7f2;border-color:#1a5c34;}
+    .link-grid a{display:block;padding:10px 12px;background:#fff;border:1px solid #e3e6ea;text-decoration:none;font-size:13px;font-weight:600;color:#0e7c3a;border-radius:6px;}
+    .link-grid a:hover{background:#eef7f1;border-color:#0e7c3a;}
 
     /* Footer */
-    .footer-line{margin-top:40px;padding-top:18px;border-top:1px solid #ccc;font-size:11px;color:#767676;font-family:"Courier New",monospace;line-height:1.6;}
-    .footer-line a{color:#767676;}
+    .footer-line{margin-top:40px;padding-top:18px;border-top:1px solid #e3e6ea;font-size:11px;color:#6a7682;line-height:1.6;}
+    .footer-line a{color:#6a7682;}
 
     /* Sticky mobile CTA */
     .sticky-cta{display:none;}
     @media(max-width:760px){
-      .sticky-cta{display:block;position:fixed;left:0;right:0;bottom:0;padding:10px 14px;background:rgba(28,43,54,0.96);border-top:1px solid #3d5a6e;z-index:50;}
-      .sticky-cta a{display:block;background:#1a5c34;color:#fff;text-align:center;padding:12px;font-size:14px;font-weight:700;text-decoration:none;border-radius:3px;}
+      .sticky-cta{display:block;position:fixed;left:0;right:0;bottom:0;padding:10px 14px;background:rgba(255,255,255,0.96);border-top:1px solid #e3e6ea;z-index:50;}
+      .sticky-cta a{display:block;background:#0e7c3a;color:#fff;text-align:center;padding:12px;font-size:14px;font-weight:700;text-decoration:none;border-radius:6px;}
       .wrap{padding-bottom:90px;}
     }
 
@@ -143,7 +144,6 @@
     <a href="https://fairrent.ca/methodology">Methodology</a>
     <a href="https://fairrent.ca/about">About</a>
     <a href="https://fairrent.ca/faq">FAQ</a>
-    <a href="https://fairrent.ca/intelligence">For business</a>
   </div>
 
   <div class="bc">
@@ -239,7 +239,7 @@
           <li><strong>Anonymous renter submissions.</strong> Real rents reported by renters in Commercial Drive.</li>
         </ul>
         <p class="body" style="margin-top:12px;">Results are grouped by neighbourhood and unit type. Individual submissions are never shown publicly. Use the numbers above as a benchmark, not an exact appraisal.</p>
-        <p class="src-line" style="margin-top:12px;"><a href="https://fairrent.ca/methodology" style="color:#1a5c34;font-weight:700;">Read the full methodology →</a></p>
+        <p class="src-line" style="margin-top:12px;"><a href="https://fairrent.ca/methodology" style="color:#0e7c3a;font-weight:700;">Read the full methodology →</a></p>
       </div>
     </section>
 
